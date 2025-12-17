@@ -131,6 +131,11 @@ USBView_OnSize (
     int  cy
 );
 
+VOID
+USBView_OnMinMaxInfo (
+  LPARAM lParam
+);
+
 LRESULT
 USBView_OnNotify (
     HWND    hWnd,
@@ -421,6 +426,7 @@ MainDlgProc (
 
         HANDLE_MSG(hWnd, WM_INITDIALOG,     USBView_OnInitDialog);
         HANDLE_MSG(hWnd, WM_CLOSE,          USBView_OnClose);
+        HANDLE_MSG(hWnd, WM_DESTROY,        USBView_OnClose);
         HANDLE_MSG(hWnd, WM_COMMAND,        USBView_OnCommand);
         HANDLE_MSG(hWnd, WM_LBUTTONDOWN,    USBView_OnLButtonDown);
         HANDLE_MSG(hWnd, WM_LBUTTONUP,      USBView_OnLButtonUp);
@@ -428,6 +434,9 @@ MainDlgProc (
         HANDLE_MSG(hWnd, WM_SIZE,           USBView_OnSize);
         HANDLE_MSG(hWnd, WM_NOTIFY,         USBView_OnNotify);
         HANDLE_MSG(hWnd, WM_DEVICECHANGE,   USBView_OnDeviceChange);
+        case WM_GETMINMAXINFO:
+          USBView_OnMinMaxInfo(lParam);
+          break;
     }
 
     return 0;
@@ -483,6 +492,10 @@ USBView_OnInitDialog (
     {
         OOPS();
     }
+
+    hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_ICON));
+    SendMessage(hWnd, WM_SETICON, ICON_BIG, (LPARAM)hicon);
+    SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)hicon);
 
     hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_ICON));
     giGoodDevice = ImageList_AddIcon(himl, hicon);
@@ -598,6 +611,9 @@ USBView_OnCommand (
                       AboutDlgProc);
             break;
 
+        case IDM_HELP:
+          MessageBoxW(ghMainWnd, L"No Help implemented for USBViewEx yet...", L"Help", MB_OK | MB_ICONINFORMATION);
+          break;
         case ID_EXIT:
             UnregisterDeviceNotification(gNotifyDevHandle);
             UnregisterDeviceNotification(gNotifyHubHandle);
@@ -686,6 +702,22 @@ USBView_OnSize (
 )
 {
     ResizeWindows(FALSE, 0);
+}
+
+//*****************************************************************************
+//
+// USBView_OnMinMaxInfo();
+//
+//*****************************************************************************
+
+VOID
+USBView_OnMinMaxInfo (
+  LPARAM lParam
+) {
+  // Set the minimum size for the window
+  LPMINMAXINFO pMinMaxInfo = (LPMINMAXINFO)lParam;
+  pMinMaxInfo->ptMinTrackSize.x = 300;
+  pMinMaxInfo->ptMinTrackSize.y = 200;
 }
 
 //*****************************************************************************
@@ -837,34 +869,49 @@ VOID RefreshTree (VOID)
 
 }
 
+HINSTANCE GetInstanceFromHwnd(HWND hWnd) {
+  // GetWindowLongPtr is the recommended function for 64-bit compatibility
+  LONG_PTR hInstancePtr = GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+  // Cast the result to HINSTANCE
+  HINSTANCE hInstance = (HINSTANCE)(hInstancePtr);
+
+  return hInstance;
+}
+
 //*****************************************************************************
 //
 // AboutDlgProc()
 //
 //*****************************************************************************
 
-INT_PTR CALLBACK
-AboutDlgProc (
+INT_PTR CALLBACK AboutDlgProc (
     HWND   hwnd,
     UINT   uMsg,
     WPARAM wParam,
     LPARAM lParam
-)
-{
-    switch (uMsg)
-    {
-    case WM_COMMAND:
-
-        switch (LOWORD(wParam))
-        {
+) {
+  UNREFERENCED_PARAMETER(lParam);
+  const HICON kSmallIcon = LoadIcon(GetInstanceFromHwnd(hwnd), MAKEINTRESOURCE(IDI_SMALL));
+  switch (uMsg) {
+    case WM_INITDIALOG: {
+      SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)kSmallIcon);
+      SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)kSmallIcon);
+      return (INT_PTR)TRUE;
+    } break;
+    case WM_COMMAND: {
+      switch (LOWORD(wParam)) {
         case IDOK:
-
-            EndDialog (hwnd, 0);
-            break;
-        }
-        break;
-
-    }
+          EndDialog (hwnd, LOWORD(wParam));
+          return (INT_PTR)TRUE;
+          break;
+        case IDCANCEL:
+          EndDialog (hwnd, LOWORD(wParam));
+          return (INT_PTR)FALSE;
+      }
+    } break;
+    default:
+      break;
+  }
 
     return FALSE;
 }
