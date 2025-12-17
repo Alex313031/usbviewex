@@ -1,0 +1,48 @@
+# Copyright 2025 Alex313031
+
+group("usbview_all") {
+  public_deps = [
+    ":usbview",
+    ":usbview_static",
+  ]
+}
+
+executable("usbview") {
+  configs -= [ "//build/config/win:console_subsystem" ]
+  configs += [
+    "//build/config/win:windowed_subsystem",
+    ":usbview_config",
+  ]
+  sources = [
+    "src/debug.c",
+    "src/devnode.c",
+    "src/dispaud.c",
+    "src/display.c",
+    "src/enum.c",
+    "src/resource.h",
+    "src/usbdesc.h",
+    "src/usbview.c",
+    "src/usbview.h",
+    "src/usbview.rc",
+    "src/vndrlist.h",
+  ]
+  include_dirs = [
+    "src",
+  ]
+  deps = [
+    ":usbview_static",
+  ]
+}
+
+config("usbview_config") {
+  include_dirs = [
+    "./src",
+  ]
+}
+
+static_library("usbview_static") {
+  sources = [
+    "usbdesc.h"
+    "version.h"
+  ]
+}
