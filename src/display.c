@@ -33,13 +33,14 @@ Revision History:
 #include "vndrlist.h"
 #include "usbview.h"
 
+#ifndef __MINGW32__
 #if _MSC_VER >= 1200
 #pragma warning(push)
 #endif
 #pragma warning(disable:4200) // named type definition in parentheses
 #pragma warning(disable:4213) // named type definition in parentheses
 #pragma warning(disable:4701) // named type definition in parentheses
-
+#endif
 
 //*****************************************************************************
 // D E F I N E S
@@ -804,7 +805,7 @@ DisplayConfigDesc (
             DisplayUnknownDescriptor(commonDesc);
         }
 
-        (PUCHAR)commonDesc += commonDesc->bLength;
+        commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
     }
 }
 

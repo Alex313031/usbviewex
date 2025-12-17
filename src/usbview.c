@@ -24,7 +24,8 @@ Revision History:
 // I N C L U D E S
 //*****************************************************************************
 
-#include <windows.h>
+#include "globals.h"
+
 #include <basetyps.h>
 #include <windowsx.h>
 #include <initguid.h>
@@ -32,16 +33,17 @@ Revision History:
 #include <usbioctl.h>
 #include <dbt.h>
 #include <stdio.h>
-#include <tchar.h>
+
 #include "resource.h"
 #include "usbview.h"
 
+#ifndef __MINGW32__
 #if _MSC_VER >= 1200
 #pragma warning(push)
 #endif
 #pragma warning(disable:4200) // named type definition in parentheses
 #pragma warning(disable:4100) // named type definition in parentheses
-
+#endif
 
 //*****************************************************************************
 // D E F I N E S
@@ -197,6 +199,7 @@ int             giNoDevice;
 HDEVNOTIFY      gNotifyDevHandle;
 HDEVNOTIFY      gNotifyHubHandle;
 
+int             TotalHubs;
 
 //*****************************************************************************
 //
@@ -204,14 +207,12 @@ HDEVNOTIFY      gNotifyHubHandle;
 //
 //*****************************************************************************
 
-int WINAPI
-WinMain (
-    __in HINSTANCE hInstance,
-    __in_opt HINSTANCE hPrevInstance,
-    __in LPSTR lpCmdLine,
-    __in int nCmdShow
-)
+int APIENTRY wWinMain(HINSTANCE hInstance,
+                      HINSTANCE hPrevInstance,
+                      LPWSTR    lpCmdLine,
+                      int       nCmdShow)
 {
+    UNREFERENCED_PARAMETER(hPrevInstance);
     MSG     msg;
     HACCEL  hAccel;
 
@@ -821,7 +822,11 @@ VOID RefreshTree (VOID)
 
         // Update Status Line with number of devices connected
         //
+#ifndef __MINGW32__
         _stprintf_s(statusText, sizeof(statusText)/sizeof(statusText[0]), _T("Devices Connected: %d   Hubs Connected: %d"),
+#else
+        snwprintf(statusText, sizeof(statusText)/sizeof(statusText[0]), _T("Devices Connected: %d   Hubs Connected: %d"),
+#endif // __MINGW32__
                  devicesConnected, TotalHubs);
         SetWindowText(ghStatusWnd, statusText);
     }
@@ -1017,7 +1022,11 @@ Oops
 {
     TCHAR szBuf[256];
 
+#ifndef __MINGW32__
     _stprintf_s(szBuf, sizeof(szBuf), _T("File: %s, Line %d"), File, Line);
+#else
+    snwprintf(szBuf, sizeof(szBuf), _T("File: %s, Line %d"), File, Line);
+#endif // __MINGW32__
 
     MessageBox(ghMainWnd, szBuf, _T("Oops!"), MB_OK);
 }

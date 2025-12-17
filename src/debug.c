@@ -188,7 +188,11 @@ MyCheckForLeaks (
     {
         header = (PALLOCHEADER)RemoveHeadList(&AllocListHead);
 
+#ifndef __MINGW32__
         _stprintf_s(buf, sizeof(buf),
+#else
+        snwprintf(buf, sizeof(buf),
+#endif // __MINGW32__
                  _T("File: %s, Line: %d"),
                  header->File,
                  header->Line);

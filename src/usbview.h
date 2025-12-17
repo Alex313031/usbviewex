@@ -20,11 +20,14 @@ Revision History:
 
 --*/
 
+#ifndef USBVIEW_USBVIEW_H_
+#define USBVIEW_USBVIEW_H_
+
 //*****************************************************************************
 // I N C L U D E S
 //*****************************************************************************
+#include "globals.h"
 
-#include <commctrl.h>
 #include <usbioctl.h>
 #include <usbiodef.h>
 
@@ -35,6 +38,7 @@ Revision History:
 //*****************************************************************************
 // P R A G M A S
 //*****************************************************************************
+#ifndef __MINGW32__
 #if _MSC_VER >= 1200
 #pragma warning(push)
 #endif
@@ -42,6 +46,7 @@ Revision History:
 #pragma warning(disable:4100) // named type definition in parentheses
 
 #pragma intrinsic(strlen, strcpy, memset)
+#endif
 
 //*****************************************************************************
 // D E F I N E S
@@ -266,25 +271,6 @@ typedef struct _USBDEVICEINFO
 
 } USBDEVICEINFO, *PUSBDEVICEINFO;
 
-
-//*****************************************************************************
-// G L O B A L S
-//*****************************************************************************
-
-//
-// USBVIEW.C
-//
-
-BOOL gDoConfigDesc;
-int TotalHubs;
-
-//
-// ENUM.C
-//
-
-PCTSTR ConnectionStatuses[];
-
-
 //*****************************************************************************
 // F U N C T I O N    P R O T O T Y P E S
 //*****************************************************************************
@@ -405,3 +391,4 @@ DisplayAudioDescriptor (
 #pragma warning(pop)
 #endif
 
+#endif // USBVIEW_USBVIEW_H_

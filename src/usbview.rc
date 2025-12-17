@@ -1,46 +1,46 @@
-#include <windows.h>
-#include <commctrl.h>
+// Microsoft Visual C++ generated resource script.
+
 #include "resource.h"
 
+#define APSTUDIO_READONLY_SYMBOLS
+// Generated from the TEXTINCLUDE resource.
 
+#ifndef APSTUDIO_INVOKED
+#include "version.h"
+#endif // APSTUDIO_INVOKED
 
-#if WINNT
-#include <ntverp.h>
-#else
-#include <version.h>
-#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
 
+#include <winres.h>
+
+#ifdef __MINGW32__
+#include <winuser.h>
+#endif // __MINGW32__
+
+#undef APSTUDIO_READONLY_SYMBOLS
+
+// Embed manifest for common controls and DPI support
+#ifdef __MINGW32__
+APP_MANIFEST RT_MANIFEST "usbview.manifest"
+#endif // __MINGW32__
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// VERSION
+// ICONS
 //
-#define VER_FILEDESCRIPTION_STR     "Microsoft\256 Windows(TM) USB Device Viewer"
-#define VER_INTERNALNAME_STR        "USBVIEW"
-#define VER_ORIGINALFILENAME_STR    "USBVIEW.EXE"
-#define VER_LEGALCOPYRIGHT_STR      "Copyright \251 Microsoft Corporation 1996-2008.  All Rights Reserved."
-
-#define VER_FILETYPE     VFT_APP
-#define VER_FILESUBTYPE  VFT2_UNKNOWN
-
-#include <common.ver>
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// ICON
-//
-IDI_ICON                ICON    DISCARDABLE     "USB.ICO"
-IDI_BADICON				ICON	DISCARDABLE		"BANG.ICO"
-IDI_COMPUTER			ICON	DISCARDABLE		"MONITOR.ICO"
-IDI_HUB					ICON	DISCARDABLE		"HUB.ICO"
-IDI_NODEVICE			ICON	DISCARDABLE		"PORT.ICO"
+IDI_ICON         ICON  DISCARDABLE    "usb.ico"
+IDI_BADICON      ICON  DISCARDABLE    "bang.ico"
+IDI_COMPUTER     ICON  DISCARDABLE    "monitor.ico"
+IDI_HUB          ICON  DISCARDABLE    "hub.ico"
+IDI_NODEVICE     ICON  DISCARDABLE    "port.ico"
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // Cursor
 //
-IDC_SPLIT               CURSOR  DISCARDABLE     "SPLIT.CUR"
+IDC_SPLIT        CURSOR  DISCARDABLE  "split.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -108,7 +108,7 @@ END
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// Accelerator
+// Accelerators
 //
 
 IDACCEL ACCELERATORS DISCARDABLE 
@@ -116,3 +116,45 @@ BEGIN
     VK_F5,          ID_REFRESH,             VIRTKEY,NOINVERT
 END
 
+//////////////////////////////////////////////////////////////////////////////
+//
+// VERSION
+//
+#define VER_FILEDESCRIPTION_STR     "Microsoft\256 Windows(TM) USB Device Viewer"
+#define VER_LEGALCOPYRIGHT_STR      "Copyright \251 Microsoft Corporation 1996-2008.  All Rights Reserved."
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
+ PRODUCTVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG // 0x00000010L
+#else // Release mode
+ FILEFLAGS 0x00000000L // Normal?
+#endif  // _DEBUG
+ // Windows NT
+ FILEOS VOS_NT_WINDOWS32 // 0x00040004L
+ FILETYPE VFT_APP // 0x00000001L
+ FILESUBTYPE VFT2_UNKNOWN // 0x00000000L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0" // English Unicode
+        BEGIN
+            VALUE "Comments", "https://github.com/Alex313031/usbviewex"
+            VALUE "CompanyName", "Alex313031"
+            VALUE "FileDescription", VER_FILEDESCRIPTION_STR
+            VALUE "FileVersion", VERSION_STRING
+            VALUE "InternalName", "usbview"
+            VALUE "LegalCopyright", LEGAL_COPYRIGHT
+            VALUE "LegalTrademarks", "MS-PL"
+            VALUE "OriginalFilename", "usbview.exe"
+            VALUE "ProductName", "USBViewEx"
+            VALUE "ProductVersion", VERSION_STRING
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END

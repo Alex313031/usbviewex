@@ -54,6 +54,8 @@ Revision History:
 // I N C L U D E S
 //*****************************************************************************
 
+#include "globals.h"
+
 #include <windows.h>
 #include <basetyps.h>
 #include <winioctl.h>
@@ -61,15 +63,17 @@ Revision History:
 #include <string.h>
 #include <stdio.h>
 #include <tchar.h>
+
 #include "usbview.h"
 
+#ifndef __MINGW32__
 #if _MSC_VER >= 1200
 #pragma warning(push)
 #endif
 #pragma warning(disable:4200) // named type definition in parentheses
 #pragma warning(disable:4213) // named type definition in parentheses
 #pragma warning(disable:4267) // named type definition in parentheses
-
+#endif
 
 //*****************************************************************************
 // D E F I N E S
@@ -256,7 +260,11 @@ EnumerateHostController (
             {
                 ULONG   ven, dev, subsys, rev;
 
+#ifndef __MINGW32__
                 if (_stscanf_s(deviceId,
+#else
+                if (_stscanf(deviceId,
+#endif // __MINGW32__
                            _T("PCI\\VEN_%x&DEV_%x&SUBSYS_%x&REV_%x"),
                            &ven, &dev, &subsys, &rev) != 4)
                 {
@@ -385,7 +393,11 @@ EnumerateHostControllers (
     //
     for (HCNum = 0; HCNum < NUM_HCS_TO_CHECK; HCNum++)
     {
+#ifndef __MINGW32__
         _stprintf_s(HCName, sizeof(HCName)/sizeof(HCName[0]), _T("\\\\.\\HCD%d"), HCNum);
+#else
+        snwprintf(HCName, sizeof(HCName)/sizeof(HCName[0]), _T("\\\\.\\HCD%d"), HCNum);
+#endif // __MINGW32__
 
         hHCDev = CreateFile(HCName,
                             GENERIC_WRITE,
@@ -716,7 +728,11 @@ EnumerateHub (
     //
     if (ConnectionInfo)
     {
+#ifndef __MINGW32__
         _stprintf_s(leafName, sizeof(leafName)/sizeof(leafName[0]), _T("[Port%d] "), ConnectionInfo->ConnectionIndex);
+#else
+        snwprintf(leafName, sizeof(leafName)/sizeof(leafName[0]), _T("[Port%d] "), ConnectionInfo->ConnectionIndex);
+#endif // __MINGW32__
         _tcscat_s(leafName, sizeof(leafName)/sizeof(leafName[0]), ConnectionStatuses[ConnectionInfo->ConnectionStatus]);
         _tcscat_s(leafName, sizeof(leafName)/sizeof(leafName[0]), _T(" :  "));
 
@@ -1076,7 +1092,11 @@ EnumerateHubPorts (
 
             info->StringDescs = stringDescs;
 
+#ifndef __MINGW32__
             _stprintf_s(leafName, sizeof(leafName)/sizeof(leafName[0]), _T("[Port%d] "), index);
+#else
+            snwprintf(leafName, sizeof(leafName)/sizeof(leafName[0]), _T("[Port%d] "), index);
+#endif // __MINGW32__
 
             _tcscat_s(leafName, sizeof(leafName)/sizeof(leafName[0]), ConnectionStatuses[connectionInfoEx->ConnectionStatus]);
 
@@ -1803,7 +1823,7 @@ AreThereStringDescriptors (
                 {
                     return TRUE;
                 }
-                (PUCHAR)commonDesc += commonDesc->bLength;
+                commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
                 continue;
 
             case USB_INTERFACE_DESCRIPTOR_TYPE:
@@ -1817,11 +1837,11 @@ AreThereStringDescriptors (
                 {
                     return TRUE;
                 }
-                (PUCHAR)commonDesc += commonDesc->bLength;
+                commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
                 continue;
 
             default:
-                (PUCHAR)commonDesc += commonDesc->bLength;
+                commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
                 continue;
         }
         break;
@@ -1949,7 +1969,7 @@ GetAllStringDescriptors (
                                              languageIDs,
                                              stringDescNodeTail);
                 }
-                (PUCHAR)commonDesc += commonDesc->bLength;
+                commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
                 continue;
 
             case USB_INTERFACE_DESCRIPTOR_TYPE:
@@ -1969,11 +1989,11 @@ GetAllStringDescriptors (
                                              languageIDs,
                                              stringDescNodeTail);
                 }
-                (PUCHAR)commonDesc += commonDesc->bLength;
+                commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
                 continue;
 
             default:
-                (PUCHAR)commonDesc += commonDesc->bLength;
+                commonDesc = (PUSB_COMMON_DESCRIPTOR)((PUCHAR)commonDesc + commonDesc->bLength);
                 continue;
         }
         break;

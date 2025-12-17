@@ -21,6 +21,9 @@ Revision History:
 
 --*/
 
+#ifndef USBVIEW_USBDESC_H_
+#define USBVIEW_USBDESC_H_
+
 #pragma pack(push, 1)
 
 //*****************************************************************************
@@ -316,3 +319,5 @@ typedef struct _USB_AUDIO_TYPE_II_FORMAT_DESCRIPTOR {
 
 
 #pragma pack(pop)
+
+#endif // USBVIEW_USBDESC_H_

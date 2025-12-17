@@ -30,14 +30,14 @@ Revision History:
 #include <tchar.h>
 #include "usbview.h"
 
-
+#ifndef __MINGW32__
 #if _MSC_VER >= 1200
 #pragma warning(push)
 #endif
 #pragma warning(disable:4200) // named type definition in parentheses
 #pragma warning(disable:4213) // named type definition in parentheses
 #pragma warning(disable:4701) // named type definition in parentheses
-
+#endif
 
 //*****************************************************************************
 // D E F I N E S
@@ -591,7 +591,8 @@ DisplayACMixerUnit (
                      *data++);
 
     AppendTextBuffer(_T("wChannelConfig:     0x%04X\r\n"),
-                     *((PUSHORT)data)++);
+                     *(PUSHORT)data);
+    data += sizeof(USHORT);
 
     AppendTextBuffer(_T("iChannelNames:        0x%02X\r\n"),
                      *data++);
@@ -821,7 +822,8 @@ DisplayACProcessingUnit (
                      *data++);
 
     AppendTextBuffer(_T("wChannelConfig:     0x%04X\r\n"),
-                     *((PUSHORT)data)++);
+                     *(PUSHORT)data);
+    data += sizeof(USHORT);
 
     AppendTextBuffer(_T("iChannelNames:        0x%02X\r\n"),
                      *data++);
@@ -908,7 +910,8 @@ DisplayACExtensionUnit (
                      *data++);
 
     AppendTextBuffer(_T("wChannelConfig:     0x%04X\r\n"),
-                     *((PUSHORT)data)++);
+                     *(PUSHORT)data);
+    data += sizeof(USHORT);
 
     AppendTextBuffer(_T("iChannelNames:        0x%02X\r\n"),
                      *data++);

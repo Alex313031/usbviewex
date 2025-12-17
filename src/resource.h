@@ -23,6 +23,11 @@ Copyright (c) 1998 Microsoft Corporation, All Rights Reserved.
 #define ID_AUTO_REFRESH                 40003
 #define ID_CONFIG_DESCRIPTORS           40004
 #define ID_ABOUT                        40005
-#define IDC_STATIC                      0xFFFFFFFF
 
+// For resources to be loaded without an ID from the system.
+#ifndef IDC_STATIC
+ #define IDC_STATIC                -1
+#endif // IDC_STATIC
 
+// For importing .manifest in .rc file
+#define APP_MANIFEST                1
