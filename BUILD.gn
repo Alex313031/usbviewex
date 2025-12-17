@@ -14,20 +14,18 @@ executable("usbview") {
     ":usbview_config",
   ]
   sources = [
-    "src/debug.c",
     "src/devnode.c",
     "src/dispaud.c",
     "src/display.c",
     "src/enum.c",
+    "src/globals.h",
     "src/resource.h",
     "src/usbdesc.h",
     "src/usbview.c",
     "src/usbview.h",
     "src/usbview.rc",
     "src/vndrlist.h",
-  ]
-  include_dirs = [
-    "src",
+    "src/version.h",
   ]
   deps = [
     ":usbview_static",
@@ -38,11 +36,17 @@ config("usbview_config") {
   include_dirs = [
     "./src",
   ]
+  libs = [
+    "cfgmgr32",
+    "setupapi",
+  ]
 }
 
 static_library("usbview_static") {
   sources = [
-    "usbdesc.h"
-    "version.h"
+    "src/debug.c",
+    "src/globals.h",
+    "src/usbview.h",
+    "src/version.h",
   ]
 }
