@@ -1,4 +1,4 @@
-# Copyright 2025 Alex313031
+# Copyright 2026 Alex313031
 
 group("usbview_all") {
   public_deps = [
@@ -8,9 +8,7 @@ group("usbview_all") {
 }
 
 executable("usbview") {
-  configs -= [ "//build/config/win:console_subsystem" ]
   configs += [
-    "//build/config/win:windowed_subsystem",
     ":usbview_config",
   ]
   sources = [
