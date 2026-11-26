@@ -45,6 +45,12 @@ D E F I N E S
 #define SIZEBAR             0
 #define WINDOWSCALEFACTOR   15
 
+// status bar parts
+//
+#define STATUS_PART_MESSAGE 0   // left: changes while the program runs
+#define STATUS_PART_VERSION 1   // right: version info, set once at startup
+#define STATUS_PART_COUNT   2
+
 /*****************************************************************************
  L O C A L  T Y P E D E F S
 *****************************************************************************/
@@ -89,6 +95,16 @@ ResizeWindows (
                BOOL    bSizeBar,
                int     BarLocation
                );
+
+VOID
+InitStatusBar (
+               VOID
+               );
+
+VOID
+SizeStatusBarParts (
+                    VOID
+                    );
 
 LRESULT CALLBACK
 MainDlgProc (
@@ -252,6 +268,10 @@ BOOL            gbButtonDown     = FALSE;
 BOOL            gDoAutoRefresh   = TRUE;
 
 int             gBarLocation     = 0;
+
+// Text and pixel width of the version part at the right of the status bar
+CHAR            gStatusVersionText[64] = { 0 };
+int             gStatusVersionWidth    = 0;
 int             giGoodDevice     = 0;
 int             giBadDevice      = 0;
 int             giComputer       = 0;
@@ -907,6 +927,124 @@ ResizeWindows (
         MainClientRect.right,
         StatusWindowRect.bottom - StatusWindowRect.top,
         TRUE);
+
+    // The version part keeps its width, the message part takes the rest
+    //
+    SizeStatusBarParts();
+}
+
+
+/*****************************************************************************
+
+InitStatusBar()
+
+Splits the status bar in two. The right part shows the program and UVC spec
+versions; it is filled in here, once, and never changes. The left part is
+left for status messages (see RefreshTree()).
+
+*****************************************************************************/
+
+VOID
+InitStatusBar (
+               VOID
+               )
+{
+    HDC     hdc;
+    HFONT   hFont;
+    HFONT   hOldFont = NULL;
+    SIZE    textSize = { 0 };
+
+    StringCchPrintf(gStatusVersionText, sizeof(gStatusVersionText),
+#ifdef H264_SUPPORT
+        "Version: %s   UVC Spec Version: %d.%d",
+        VERSION_STRING, UVC_SPEC_MAJOR_VERSION, UVC_SPEC_MINOR_VERSION);
+#else
+        "Version: %s",
+        VERSION_STRING);
+#endif
+
+    // Measure the text with the status bar's own font, so that the part is
+    // exactly as wide as it needs to be
+    //
+    hdc = GetDC(ghStatusWnd);
+
+    if (hdc != NULL)
+    {
+        hFont = (HFONT) SendMessage(ghStatusWnd, WM_GETFONT, 0, 0);
+
+        if (hFont != NULL)
+        {
+            hOldFont = (HFONT) SelectObject(hdc, hFont);
+        }
+
+        GetTextExtentPoint32(hdc,
+            gStatusVersionText,
+            lstrlen(gStatusVersionText),
+            &textSize);
+
+        if (hOldFont != NULL)
+        {
+            SelectObject(hdc, hOldFont);
+        }
+
+        ReleaseDC(ghStatusWnd, hdc);
+    }
+
+    // Room for the part's borders and padding, and for the size grip that is
+    // drawn over the right end of the status bar
+    //
+    gStatusVersionWidth = textSize.cx + 16 + GetSystemMetrics(SM_CXVSCROLL);
+
+    SizeStatusBarParts();
+
+    SendMessage(ghStatusWnd,
+        SB_SETTEXT,
+        STATUS_PART_VERSION,
+        (LPARAM) gStatusVersionText);
+}
+
+
+/*****************************************************************************
+
+SizeStatusBarParts()
+
+Positions the divider between the two status bar parts. Called whenever the
+status bar is resized. The text of each part is kept by the control.
+
+*****************************************************************************/
+
+VOID
+SizeStatusBarParts (
+                    VOID
+                    )
+{
+    RECT    StatusClientRect = { 0 };
+    int     parts[STATUS_PART_COUNT];
+
+    if (ghStatusWnd == NULL)
+    {
+        return;
+    }
+
+    GetClientRect(ghStatusWnd, &StatusClientRect);
+
+    // Each entry is the right edge of a part; -1 extends to the right edge
+    // of the status bar. On a very narrow window the message part gets no
+    // room at all instead of a negative edge.
+    //
+    parts[STATUS_PART_MESSAGE] = StatusClientRect.right - gStatusVersionWidth;
+
+    if (parts[STATUS_PART_MESSAGE] < 0)
+    {
+        parts[STATUS_PART_MESSAGE] = 0;
+    }
+
+    parts[STATUS_PART_VERSION] = -1;
+
+    SendMessage(ghStatusWnd,
+        SB_SETPARTS,
+        STATUS_PART_COUNT,
+        (LPARAM) parts);
 }
 
 
@@ -1045,6 +1183,8 @@ USBView_OnInitDialog (
 #endif
 
     ghStatusWnd = GetDlgItem(hWnd, IDC_STATUS);
+    InitStatusBar();
+
     ghMainMenu = GetMenu(hWnd);
     if (ghMainMenu == NULL)
     {
@@ -1654,16 +1794,16 @@ VOID RefreshTree (VOID)
         //
         memset(statusText, 0, sizeof(statusText));
         StringCchPrintf(statusText, sizeof(statusText),
-#ifdef H264_SUPPORT
-        "UVC Spec Version: %d.%d Version: %s Devices Connected: %d   Hubs Connected: %d",
-        UVC_SPEC_MAJOR_VERSION, UVC_SPEC_MINOR_VERSION, VERSION_STRING,
-        devicesConnected, TotalHubs);
-#else
         "Devices Connected: %d   Hubs Connected: %d",
         devicesConnected, TotalHubs);
-#endif
 
-        SetWindowText(ghStatusWnd, statusText);
+        // Only the message part; the version part on the right was set once
+        // in InitStatusBar() and stays as it is
+        //
+        SendMessage(ghStatusWnd,
+            SB_SETTEXT,
+            STATUS_PART_MESSAGE,
+            (LPARAM) statusText);
     }
     else
     {
