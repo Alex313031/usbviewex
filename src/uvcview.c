@@ -199,6 +199,12 @@ AboutDlgProc (
               );
 
 VOID
+CenterWindowOnOwner (
+                     HWND hwnd,
+                     HWND hOwner
+                     );
+
+VOID
 WalkTree (
           _In_ HTREEITEM        hTreeItem,
           _In_ LPFNTREECALLBACK lpfnTreeCallback,
@@ -1814,6 +1820,90 @@ VOID RefreshTree (VOID)
 
 /*****************************************************************************
 
+CenterWindowOnOwner()
+
+Moves hwnd so that it is centered over hOwner, then nudges it back onto the
+monitor the owner is on if that would leave part of it off screen. If there
+is no usable owner (none, or minimized), it is centered on the work area.
+
+*****************************************************************************/
+
+VOID
+CenterWindowOnOwner (
+                     HWND hwnd,
+                     HWND hOwner
+                     )
+{
+    RECT        rcWindow;
+    RECT        rcOwner;
+    RECT        rcWork;
+    MONITORINFO monitorInfo;
+    HMONITOR    hMonitor;
+    int         width;
+    int         height;
+    int         x;
+    int         y;
+
+    if (!GetWindowRect(hwnd, &rcWindow))
+    {
+        return;
+    }
+
+    // The work area (screen minus taskbar) of the monitor to stay on
+    hMonitor = MonitorFromWindow(hOwner != NULL ? hOwner : hwnd,
+                                 MONITOR_DEFAULTTONEAREST);
+    monitorInfo.cbSize = sizeof(monitorInfo);
+
+    if (hMonitor != NULL && GetMonitorInfo(hMonitor, &monitorInfo))
+    {
+        rcWork = monitorInfo.rcWork;
+    }
+    else if (!SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWork, 0))
+    {
+        return;
+    }
+
+    if (hOwner == NULL || IsIconic(hOwner) || !GetWindowRect(hOwner, &rcOwner))
+    {
+        rcOwner = rcWork;
+    }
+
+    width  = rcWindow.right - rcWindow.left;
+    height = rcWindow.bottom - rcWindow.top;
+
+    x = rcOwner.left + ((rcOwner.right - rcOwner.left) - width) / 2;
+    y = rcOwner.top + ((rcOwner.bottom - rcOwner.top) - height) / 2;
+
+    // Keep the whole window on screen; the top left corner wins if it
+    // cannot fit
+    if (x + width > rcWork.right)
+    {
+        x = rcWork.right - width;
+    }
+    if (y + height > rcWork.bottom)
+    {
+        y = rcWork.bottom - height;
+    }
+    if (x < rcWork.left)
+    {
+        x = rcWork.left;
+    }
+    if (y < rcWork.top)
+    {
+        y = rcWork.top;
+    }
+
+    SetWindowPos(hwnd,
+                 NULL,
+                 x,
+                 y,
+                 0,
+                 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+/*****************************************************************************
+
 AboutDlgProc()
 
 *****************************************************************************/
@@ -1836,6 +1926,9 @@ AboutDlgProc (
             char TextBuffer[TEXT_ITEM_LENGTH];
             HWND hItem;
             HICON hSmallIcon;
+
+            // Open in the middle of the main window, wherever that is
+            CenterWindowOnOwner(hwnd, GetParent(hwnd));
 
             hSmallIcon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_SMALL));
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM) hSmallIcon);
