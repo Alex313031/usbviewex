@@ -20,7 +20,8 @@ Revision History:
 
 --*/
 
-#pragma once
+#ifndef USBVIEW_CODEANALYSIS_H_
+#define USBVIEW_CODEANALYSIS_H_
 
 #if CODE_ANALYSIS
 
@@ -131,3 +132,5 @@ namespace Microsoft
 };
 
 #endif
+
+#endif // USBVIEW_CODEANALYSIS_H_

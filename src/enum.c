@@ -470,9 +470,6 @@ EnumerateHostController (
         // latter from Windows Vista on. There are no string or character
         // conversions here, so the two behave identically. %lx because the
         // targets are ULONGs.
-#ifndef __MINGW32__
-#pragma warning(suppress:4996) // sscanf "may be unsafe"
-#endif // __MINGW32__
         if (sscanf(DevProps->DeviceId,
                    "PCI\\VEN_%lx&DEV_%lx&SUBSYS_%lx&REV_%lx",
                    &ven, &dev, &subsys, &rev) != 4)

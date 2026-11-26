@@ -21,6 +21,9 @@ Revision History:
 
 --*/
 
+#ifndef USBVIEW_UVCVIEW_H_
+#define USBVIEW_UVCVIEW_H_
+
 /*****************************************************************************
  I N C L U D E S
 *****************************************************************************/
@@ -67,12 +70,6 @@ Revision History:
 
 // This is the inbox USBVideo driver descriptor header (copied locally)
 #include "uvcdesc.h"
-
-/*****************************************************************************
- P R A G M A S
-*****************************************************************************/
-
-#pragma once
 
 /*****************************************************************************
  D E F I N E S
@@ -685,3 +682,5 @@ BOOL
 ValidateDescAddress (
     PUSB_COMMON_DESCRIPTOR          commonDesc
     );
+
+#endif // USBVIEW_UVCVIEW_H_

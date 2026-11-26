@@ -1,4 +1,5 @@
-#pragma once
+#ifndef USBVIEW_H264_H_
+#define USBVIEW_H264_H_
 
 #ifdef H264_SUPPORT
 
@@ -169,3 +170,5 @@ void DisplayBitmapData(  _In_reads_(byteCount) PUCHAR pData, UCHAR byteCount,  _
 void DisplayBitmapDataWithStrings(  _In_reads_(byteCount) PUCHAR pData, UCHAR byteCount,  _In_ char * stringLabel,  _In_ PSTRINGLIST stringList, ULONG numEntriesInTable );
 void DoAdditionalErrorChecks();
 void ResetErrorCounts();
+
+#endif // USBVIEW_H264_H_
