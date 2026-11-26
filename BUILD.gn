@@ -1,0 +1,73 @@
+# Copyright 2026 Alex313031
+
+# gn-legacy build for USBViewEx.
+
+group("usbview_all") {
+  public_deps = [ ":usbview" ]
+}
+
+executable("usbview") {
+  # The sources are ANSI (narrow Win32 APIs, WinMain entry point).
+  configs -= [ "//build/config/win:unicode" ]
+  configs += [
+    "//build/config/win:ansi",
+    ":usbview_config",
+  ]
+  sources = [
+    "src/codeanalysis.h",
+    "src/debug.c",
+    "src/devnode.c",
+    "src/dispaud.c",
+    "src/display.c",
+    "src/dispvid.c",
+    "src/enum.c",
+    "src/h264.c",
+    "src/h264.h",
+    "src/langidlist.h",
+    "src/resource.h",
+    "src/usbdesc.h",
+    "src/usbviddesc.h",
+    "src/uvcdesc.h",
+    "src/uvcview.c",
+    "src/uvcview.h",
+    "src/uvcview.rc",
+    "src/version.h",
+    "src/vndrlist.h",
+  ]
+}
+
+config("usbview_config") {
+  include_dirs = [ "./src" ]
+  cflags = [
+    # A handful of loop counters in the upstream display code are set but
+    # never read.
+    "-Wno-unused-but-set-variable",
+
+    # TODO: remove once the sources build for Windows XP. gn-legacy passes
+    # -D_WIN32_WINNT/-DWINVER for the configured winver, but the USB 3
+    # structures and IOCTLs in usbioctl.h are only declared for Windows 8
+    # (0x0602) and up. See also src/version.h.
+    "-U_WIN32_WINNT",
+    "-D_WIN32_WINNT=0x0602",
+    "-UWINVER",
+    "-DWINVER=0x0602",
+  ]
+
+  if (use_llvm) {
+    cflags += [
+      # Clang-only style warnings in the upstream sources.
+      "-Wno-parentheses-equality",
+    ]
+  }
+
+  # kernel32, user32, shell32 and comctl32 come from the default
+  # //build/config/win:windowed_subsystem config.
+  libs = [
+    "gdi32",
+    "comdlg32",
+    "ole32",
+    "cfgmgr32",
+    "setupapi",
+    "shlwapi",
+  ]
+}

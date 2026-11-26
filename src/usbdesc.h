@@ -84,7 +84,9 @@ Revision History:
 #define USB_OTHER_SPEED_CONFIGURATION_DESCRIPTOR_TYPE  0x07
 #define USB_INTERFACE_POWER_DESCRIPTOR_TYPE            0x08
 #define USB_OTG_DESCRIPTOR_TYPE                        0x09
+#ifndef USB_DEBUG_DESCRIPTOR_TYPE // MinGW's usbspec.h already has it
 #define USB_DEBUG_DESCRIPTOR_TYPE                      0x0A
+#endif
 #define USB_IAD_DESCRIPTOR_TYPE                        0x0B
 
 //

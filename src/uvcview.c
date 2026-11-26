@@ -27,6 +27,8 @@ Revision History:
 I N C L U D E S
 *****************************************************************************/
 
+#define USBVIEW_INIT_GUIDS // This file instantiates the GUIDs, see uvcview.h
+
 #include "resource.h"
 #include "uvcview.h"
 #include "h264.h"

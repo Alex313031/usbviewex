@@ -28,7 +28,11 @@ Revision History:
 
 #include <windows.h>
 #include <windowsx.h>
+// GUIDs are only instantiated in the one source file that defines
+// USBVIEW_INIT_GUIDS (uvcview.c); everywhere else DEFINE_GUID just declares them.
+#ifdef USBVIEW_INIT_GUIDS
 #include <initguid.h>
+#endif
 #include <devioctl.h>
 #include <dbt.h>
 #include <stdio.h>

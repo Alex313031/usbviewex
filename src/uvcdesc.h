@@ -15,7 +15,9 @@
 
 
 // USB Video Device Class Code
-#define USB_DEVICE_CLASS_VIDEO     0x0E 
+#ifndef USB_DEVICE_CLASS_VIDEO // MinGW's usbspec.h already has it
+#define USB_DEVICE_CLASS_VIDEO     0x0E
+#endif
 
 // Video sub-classes
 #define SUBCLASS_UNDEFINED              0x00
@@ -475,7 +477,7 @@ typedef struct {
 } VIDEO_INPUT_MTT, *PVIDEO_INPUT_MTT;
 
 
-__inline size_t SizeOfVideoInputMTT(_In_ PVIDEO_INPUT_MTT pDesc)
+static __inline size_t SizeOfVideoInputMTT(_In_ PVIDEO_INPUT_MTT pDesc)
 {
     UCHAR bTransportModeSize;
     PUCHAR pbCurr;
@@ -504,7 +506,7 @@ typedef struct {
 } VIDEO_OUTPUT_MTT, *PVIDEO_OUTPUT_MTT;
 
 
-__inline size_t SizeOfVideoOutputMTT(_In_ PVIDEO_OUTPUT_MTT pDesc)
+static __inline size_t SizeOfVideoOutputMTT(_In_ PVIDEO_OUTPUT_MTT pDesc)
 {
     UCHAR bTransportModeSize;
     PUCHAR pbCurr;
@@ -561,7 +563,7 @@ typedef struct {
 } VIDEO_EXTENSION_UNIT, *PVIDEO_EXTENSION_UNIT;
 // this is followed by bControlSize, bmControls and iExtension (1 byte)
 
-__inline size_t SizeOfVideoExtensionUnit(PVIDEO_EXTENSION_UNIT pDesc)
+static __inline size_t SizeOfVideoExtensionUnit(PVIDEO_EXTENSION_UNIT pDesc)
 {
     UCHAR bControlSize;
     PUCHAR pbCurr;
@@ -644,7 +646,7 @@ typedef struct _VIDEO_STILL_IMAGE_FRAME
     VIDEO_STILL_IMAGE_RECT aStillRect[];
 } VIDEO_STILL_IMAGE_FRAME, *PVIDEO_STILL_IMAGE_FRAME;
 
-__inline size_t SizeOfVideoStillImageFrame(PVIDEO_STILL_IMAGE_FRAME pDesc)
+static __inline size_t SizeOfVideoStillImageFrame(PVIDEO_STILL_IMAGE_FRAME pDesc)
 {
     UCHAR bNumCompressionPatterns;
     PUCHAR pbCurr;
@@ -713,7 +715,7 @@ typedef struct _VIDEO_FRAME_UNCOMPRESSED
 } VIDEO_FRAME_UNCOMPRESSED, *PVIDEO_FRAME_UNCOMPRESSED;
 
 
-__inline size_t SizeOfVideoFrameUncompressed(_In_ PVIDEO_FRAME_UNCOMPRESSED pDesc)
+static __inline size_t SizeOfVideoFrameUncompressed(_In_ PVIDEO_FRAME_UNCOMPRESSED pDesc)
 {
     if (pDesc->bFrameIntervalType == 0) { // Continuous
         return sizeof(VIDEO_FRAME_UNCOMPRESSED) + (3 * sizeof(ULONG));
@@ -764,7 +766,7 @@ typedef struct _VIDEO_FRAME_MJPEG
 } VIDEO_FRAME_MJPEG, *PVIDEO_FRAME_MJPEG;
 
 
-__inline size_t SizeOfVideoFrameMjpeg(_In_ PVIDEO_FRAME_MJPEG pDesc)
+static __inline size_t SizeOfVideoFrameMjpeg(_In_ PVIDEO_FRAME_MJPEG pDesc)
 {  
     if (pDesc->bFrameIntervalType == 0) { // Continuous
         return sizeof(VIDEO_FRAME_MJPEG) + (3 * sizeof(ULONG));
@@ -814,7 +816,7 @@ typedef struct _VIDEO_FRAME_VENDOR
     DWORD adwFrameInterval[];
 } VIDEO_FRAME_VENDOR, *PVIDEO_FRAME_VENDOR;
 
-__inline size_t SizeOfVideoFrameVendor(_In_ PVIDEO_FRAME_VENDOR pDesc)
+static __inline size_t SizeOfVideoFrameVendor(_In_ PVIDEO_FRAME_VENDOR pDesc)
 {    
     if (pDesc->bFrameIntervalType == 0) { // Continuous
         return sizeof(VIDEO_FRAME_VENDOR) + (3 * sizeof(ULONG));
@@ -1051,7 +1053,7 @@ typedef struct _VIDEO_FRAME_FRAME
     ULONG adwFrameInterval[];
 } VIDEO_FRAME_FRAME, *PVIDEO_FRAME_FRAME;
 
-__inline size_t SizeOfVideoFrameFrame(_In_ PVIDEO_FRAME_FRAME pDesc)
+static __inline size_t SizeOfVideoFrameFrame(_In_ PVIDEO_FRAME_FRAME pDesc)
 {
     if (pDesc->bFrameIntervalType == 0) { // Continuous
         return sizeof(VIDEO_FRAME_FRAME) + (3 * sizeof(ULONG));

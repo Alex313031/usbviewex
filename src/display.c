@@ -41,6 +41,13 @@ D E F I N E S
 #define BUFFERALLOCINCREMENT        0x10000
 #define BUFFERMINFREESPACE          0x1000
 
+// Fields of a high speed endpoint's wMaxPacketSize (USB_HIGH_SPEED_MAXPACKET).
+// Taken from the raw value rather than the union's bitfields, because the
+// MinGW headers declare those in a tagged nested struct that Clang does not
+// treat as anonymous.
+#define HS_MAXPACKET(p)             ((p)->us & 0x07FF)          // bits 10..0
+#define HS_MUX(p)                   (((p)->us >> 11) & 0x0003)  // bits 12..11
+
 /*****************************************************************************
 T Y P E D E F S
 *****************************************************************************/
@@ -4016,23 +4023,23 @@ DisplayEndpointDescriptor (
             {
             case USB_ENDPOINT_TYPE_ISOCHRONOUS:
             case USB_ENDPOINT_TYPE_INTERRUPT:
-                switch (hsMaxPacket->HSmux) {
+                switch (HS_MUX(hsMaxPacket)) {
                 case 0:
-                    if ((hsMaxPacket->MaxPacket < 1) || (hsMaxPacket->MaxPacket >1024))
+                    if ((HS_MAXPACKET(hsMaxPacket) < 1) || (HS_MAXPACKET(hsMaxPacket) >1024))
                     {
                         AppendTextBuffer("*!*ERROR:  Invalid maximum packet size, should be between 1 and 1024\r\n");
                     }
                     break;
 
                 case 1:
-                    if ((hsMaxPacket->MaxPacket < 513) || (hsMaxPacket->MaxPacket >1024))
+                    if ((HS_MAXPACKET(hsMaxPacket) < 513) || (HS_MAXPACKET(hsMaxPacket) >1024))
                     {
                         AppendTextBuffer("*!*ERROR:  Invalid maximum packet size, should be between 513 and 1024\r\n");
                     }
                     break;
 
                 case 2:
-                    if ((hsMaxPacket->MaxPacket < 683) || (hsMaxPacket->MaxPacket >1024))
+                    if ((HS_MAXPACKET(hsMaxPacket) < 683) || (HS_MAXPACKET(hsMaxPacket) >1024))
                     {
                         AppendTextBuffer("*!*ERROR:  Invalid maximum packet size, should be between 683 and 1024\r\n");
                     }
@@ -4043,12 +4050,12 @@ DisplayEndpointDescriptor (
                     break;
                 }
 
-                AppendTextBuffer(" = %d transactions per microframe, 0x%02X max bytes\r\n", hsMaxPacket->HSmux + 1, hsMaxPacket->MaxPacket);
+                AppendTextBuffer(" = %d transactions per microframe, 0x%02X max bytes\r\n", HS_MUX(hsMaxPacket) + 1, HS_MAXPACKET(hsMaxPacket));
                 break;
 
             case USB_ENDPOINT_TYPE_BULK:
             case USB_ENDPOINT_TYPE_CONTROL:
-                AppendTextBuffer(" = 0x%02X max bytes\r\n", hsMaxPacket->MaxPacket);
+                AppendTextBuffer(" = 0x%02X max bytes\r\n", HS_MAXPACKET(hsMaxPacket));
                 break;
             }
             break;
