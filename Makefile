@@ -66,7 +66,8 @@ RC_DEPS = \
 # The sources are ANSI, so no /DUNICODE.
 # The C runtime is linked statically (/MT, /MTd below), so the exe does not
 # need the Visual C++ redistributable.
-CFLAGS  = /nologo /W4 /I$(SRCDIR) /DWIN32 /D_WINDOWS /D_MBCS
+CFLAGS  = /nologo /W4 /I$(SRCDIR) /DWIN32 /D_WINDOWS /D_MBCS \
+          /D_CRT_SECURE_NO_WARNINGS
 RCFLAGS = /nologo /i $(SRCDIR)
 
 # Subsystem version: Windows XP. 64 bit Windows starts at 5.02 (XP x64 /

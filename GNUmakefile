@@ -57,7 +57,7 @@ RC_DEPS := $(SRCDIR)/uvcview.rc $(SRCDIR)/resource.h $(SRCDIR)/version.h \
            $(wildcard $(SRCDIR)/res/*.ico) $(wildcard $(SRCDIR)/res/*.cur)
 
 # The sources are ANSI, so no -DUNICODE / -municode.
-CPPFLAGS := -I$(SRCDIR) -D_MBCS
+CPPFLAGS := -I$(SRCDIR) -D_MBCS -D_CRT_SECURE_NO_WARNINGS
 CFLAGS   := -std=c11 -Wall -Wno-unknown-pragmas -Wno-unused-but-set-variable
 LDFLAGS  := -mwindows -static \
             -Wl,--major-os-version=5,--minor-os-version=$(SUBSYS_MINOR) \

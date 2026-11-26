@@ -39,6 +39,9 @@ executable("usbview") {
 
 config("usbview_config") {
   include_dirs = [ "./src" ]
+
+  # No "may be unsafe" deprecation warnings for the standard C functions.
+  defines = [ "_CRT_SECURE_NO_WARNINGS" ]
   cflags = [
     # A handful of loop counters in the upstream display code are set but
     # never read.
