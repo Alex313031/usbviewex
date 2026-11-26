@@ -30,7 +30,6 @@ I N C L U D E S
 #include "resource.h"
 #include "uvcview.h"
 #include "h264.h"
-#include "xmlhelper.h"
 
 #include <commdlg.h>
 
@@ -63,7 +62,6 @@ L O C A L    E N U M S
 typedef enum _USBVIEW_SAVE_FILE_TYPE
 {
     UsbViewNone = 0,
-    UsbViewXmlFile,
     UsbViewTxtFile
 } USBVIEW_SAVE_FILE_TYPE;
 
@@ -203,11 +201,6 @@ DisplayLastError(
           _Inout_updates_bytes_(count) char    *szString,
           int     count);
 
-VOID AddItemInformationToXmlView(
-    HWND hTreeWnd,
-    HTREEITEM hTreeItem,
-    PVOID pContext
-    );
 HRESULT InitializeConsole();
 VOID UnInitializeConsole();
 BOOL IsStdOutFile();
@@ -218,7 +211,6 @@ VOID WaitForKeyPress();
 BOOL ProcessCommandLine();
 HRESULT ProcessCommandSaveFile(LPTSTR szFileName, DWORD dwCreationDisposition, USBVIEW_SAVE_FILE_TYPE fileType);
 HRESULT SaveAllInformationAsText(LPTSTR lpstrTextFileName, DWORD dwCreationDisposition);
-HRESULT SaveAllInformationAsXml(LPTSTR lpstrTextFileName , DWORD dwCreationDisposition);
 
 /*****************************************************************************
 G L O B A L S
@@ -283,8 +275,6 @@ WinMain (
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpszCmdLine);
 
-    InitXmlHelper();
-
     ghInstance = hInstance;
 
     ghSplitCursor = LoadCursor(ghInstance,
@@ -332,8 +322,6 @@ WinMain (
     }
 
     DestroyTextBuffer();
-
-    ReleaseXmlWriter();
 
     CHECKFORLEAKS();
 
@@ -398,10 +386,6 @@ BOOL ProcessCommandLine()
             else if (NULL != StrStrI(szAnsiArg, "/saveall:"))
             {
                 fileType = UsbViewTxtFile;
-            }
-            else if (NULL != StrStrI(szAnsiArg, "/savexml:"))
-            {
-                fileType = UsbViewXmlFile;
             }
             else if (0 == _stricmp(szAnsiArg, "/f"))
             {
@@ -488,11 +472,6 @@ HRESULT ProcessCommandSaveFile(LPTSTR szFileName, DWORD dwCreationDisposition, U
     // The UI is not created yet, open the UI, but HIDE it
     CreateMainWindow(SW_HIDE);
 
-    if (UsbViewXmlFile == fileType)
-    {
-        hr = SaveAllInformationAsXml(szFileName, dwCreationDisposition);
-    }
-
     if (UsbViewTxtFile == fileType)
     {
         hr = SaveAllInformationAsText(szFileName, dwCreationDisposition);
@@ -506,9 +485,6 @@ HRESULT ProcessCommandSaveFile(LPTSTR szFileName, DWORD dwCreationDisposition, U
             // was not present. Display error message to user describing '/f' option
             switch(fileType)
             {
-                case UsbViewXmlFile:
-                    DisplayMessage(IDS_USBVIEW_FILE_EXISTS_XML, szFileName);
-                    break;
                 case UsbViewTxtFile:
                     DisplayMessage(IDS_USBVIEW_FILE_EXISTS_TXT, szFileName);
                     break;
@@ -751,7 +727,7 @@ VOID PrintString(LPTSTR lpszString)
 
     if (gbConsoleFile)
     {
-        // Console has been redirected to a file, ex: `usbview /savexml:xx > test.txt`. We need to use WriteFile instead of
+        // Console has been redirected to a file, ex: `usbview /saveall:xx > test.txt`. We need to use WriteFile instead of
         // WriteConsole for text output.
         lpOemString = (LPSTR) LocalAlloc(LPTR, (Len + 1) * sizeof(CHAR));
         if (lpOemString != NULL)
@@ -1349,30 +1325,6 @@ USBView_OnCommand (
             break;
         }
 
-    case ID_SAVEXML:
-        {
-            // initialize the save file name
-            StringCchCopy(szFile, MAX_PATH, "USBViewAll.xml");
-            ofn.lpstrFilter     = "Xml\0*.xml\0\0";
-            ofn.lpstrDefExt     = "xml";
-
-            //call dialog box
-            if (! GetSaveFileName(&ofn))
-            {
-                OOPS();
-                break;
-            }
-
-            // Save the file, overwrite in case of UI since UI gives popup for confirmation
-            hr = SaveAllInformationAsXml(ofn.lpstrFile, CREATE_ALWAYS);
-            if (FAILED(hr))
-            {
-                OOPS();
-            }
-
-            break;
-        }
-
     case ID_CONFIG_DESCRIPTORS:
         gDoConfigDesc = !gDoConfigDesc;
         menuInfo.cbSize = sizeof(menuInfo);
@@ -1951,115 +1903,6 @@ ExpandItem (
     UNREFERENCED_PARAMETER(pContext);
 
     TreeView_Expand(hTreeWnd, hTreeItem, TVE_EXPAND);
-}
-
-/*****************************************************************************
-
-SaveAllInformationAsXML()
-
-Saves the entire USB tree as an XML file
-*****************************************************************************/
-HRESULT
-SaveAllInformationAsXml(
-        LPTSTR lpstrTextFileName,
-        DWORD dwCreationDisposition
-        )
-{
-    HRESULT hr = S_OK;
-
-    if (ghTreeRoot == NULL)
-    {
-        // If tree has not been populated yet, try a refresh
-        RefreshTree();
-    }
-    if (ghTreeRoot)
-    {
-        WalkTreeTopDown(ghTreeRoot, AddItemInformationToXmlView, NULL, XmlNotifyEndOfNodeList);
-
-        hr = SaveXml(lpstrTextFileName, dwCreationDisposition);
-    }
-    else
-    {
-        hr = E_FAIL;
-        OOPS();
-    }
-    ResetTextBuffer();
-    return hr;
-}
-
-//*****************************************************************************
-//
-//  AddItemInformationToXmlView
-//
-//  hTreeItem - Handle of selected TreeView item for which information should
-//  be added to the XML View
-//
-//*****************************************************************************
-VOID
-AddItemInformationToXmlView(
-        HWND hTreeWnd,
-        HTREEITEM hTreeItem,
-        PVOID pContext
-        )
-{
-    TV_ITEM tvi;
-    PVOID   info;
-    PCHAR tviName = NULL;
-
-    UNREFERENCED_PARAMETER(pContext);
-
-#ifdef H264_SUPPORT
-    ResetErrorCounts();
-#endif
-
-    tviName = (PCHAR) ALLOC(256);
-
-    if (NULL == tviName)
-    {
-        return;
-    }
-
-    //
-    // Get the name of the TreeView item, along with the a pointer to the
-    // info we stored about the item in the item's lParam.
-    //
-
-    tvi.mask = TVIF_HANDLE | TVIF_TEXT | TVIF_PARAM;
-    tvi.hItem = hTreeItem;
-    tvi.pszText = (LPSTR) tviName;
-    tvi.cchTextMax = 256;
-
-    TreeView_GetItem(hTreeWnd,
-            &tvi);
-
-    info = (PVOID)tvi.lParam;
-
-    if (NULL != info)
-    {
-        //
-        // Add Item to XML object
-        //
-        switch (*(PUSBDEVICEINFOTYPE)info)
-        {
-            case HostControllerInfo:
-                XmlAddHostController(tviName, (PUSBHOSTCONTROLLERINFO) info);
-                break;
-
-            case RootHubInfo:
-                XmlAddRootHub(tviName, (PUSBROOTHUBINFO) info);
-                break;
-
-            case ExternalHubInfo:
-                XmlAddExternalHub(tviName, (PUSBEXTERNALHUBINFO) info);
-                break;
-
-            case DeviceInfo:
-                XmlAddUsbDevice(tviName, (PUSBDEVICEINFO) info);
-                break;
-        }
-
-    }
-    return;
 }
 
 /*****************************************************************************

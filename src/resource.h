@@ -28,7 +28,6 @@ Copyright (c) 1998-2008 Microsoft Corporation, All Rights Reserved.
 #define IDS_USBVIEW_PRESSKEY            2005
 #define IDS_USBVIEW_INVALIDARG          2006
 #define IDS_USBVIEW_FILE_EXISTS_TXT     2007
-#define IDS_USBVIEW_FILE_EXISTS_XML     2008
 #define IDS_USBVIEW_INTERNAL_ERROR      2009
 #define IDS_USBVIEW_SAVED_TO            2010
 #define IDS_USBVIEW_INVALID_FILENAME    2011
@@ -46,6 +45,5 @@ Copyright (c) 1998-2008 Microsoft Corporation, All Rights Reserved.
 #define ID_LOG_DEBUG                    40009
 #define ID_SAVE                         40010
 #define ID_SAVEALL                      40011
-#define ID_SAVEXML                      40012
 #define IDC_STATIC                      0xFFFFFFFF
 

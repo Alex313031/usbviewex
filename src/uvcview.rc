@@ -86,7 +86,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Save Current &View ..."        ID_SAVE
         MENUITEM "Save As (&txt) ...",      ID_SAVEALL
-        MENUITEM "Save As (&xml) ...\tF2",  ID_SAVEXML
         MENUITEM SEPARATOR
 
         MENUITEM "E&xit",         ID_EXIT
@@ -113,7 +112,6 @@ END
 IDACCEL ACCELERATORS DISCARDABLE
 BEGIN
     VK_F5,          ID_REFRESH,            VIRTKEY,NOINVERT
-    VK_F2,          ID_SAVEXML,            VIRTKEY,NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -139,12 +137,10 @@ BEGIN
                                     \n\t/q quiet mode, does not display 'Press any key to continue ...\n\t\
                                     \nusbview [/q] [/f] /saveall:<filename.txt>\
                                     \n\tsaveall - saves the USB tree view as a text file\
-                                    \n\t/f - overwrite file if it already exists\n\nusbview [/q] [/f] /savexml:<filename.xml>\
-                                    \n\tsavexml - saves the USB tree view as a xml file\n\t/f - overwrite file if it already exists\n\n"
+                                    \n\t/f - overwrite file if it already exists\n\n"
     IDS_USBVIEW_PRESSKEY            "Press any key to continue ...\n"
     IDS_USBVIEW_INVALIDARG          "Invalid argument: [%1]\n"
     IDS_USBVIEW_FILE_EXISTS_TXT     "File: [%1] already exists, try `usbview /f /saveall:[%1]` to force overwrite\n"
-    IDS_USBVIEW_FILE_EXISTS_XML     "File: [%1] already exists, try `usbview /f /savexml:[%1]` to force overwrite\n"
     IDS_USBVIEW_INTERNAL_ERROR      "An internal error occured, please report this as a bug\n"
     IDS_USBVIEW_SAVED_TO            "Usbview information saved to file : [%1]\n"
     IDS_USBVIEW_INVALID_FILENAME    "The argument : [%1] is invalid or incomplete.\n"
