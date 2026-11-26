@@ -135,7 +135,9 @@ MyReAlloc (
             // and the original handle and pointer are still valid.
             // Add the old address back to the allocation list.
             //
+#ifndef __MINGW32__
             #pragma prefast(suppress:__WARNING_USING_UNINIT_VAR, "SAL noise")
+#endif // __MINGW32__
             InsertTailList(&AllocListHead, &header->ListEntry);
         }
         else

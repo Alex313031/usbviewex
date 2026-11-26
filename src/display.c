@@ -57,6 +57,43 @@ typedef struct _EHCI_CONTROLLER_DATA
 
 
 /*****************************************************************************
+G L O B A L S
+*****************************************************************************/
+
+// Declared extern in uvcview.h, shared with dispvid.c and others.
+// All are (re)initialized in InitializePerDeviceSettings()
+//
+// Save the default frame from the MJPEG, Uncompressed, Vendor and Frame Based Format descriptor
+// Check for this when processing the individual Frame descriptors
+UCHAR   g_chMJPEGFrameDefault = 0;
+UCHAR   g_chUNCFrameDefault = 0;
+UCHAR   g_chVendorFrameDefault = 0;
+UCHAR   g_chFrameBasedFrameDefault = 0;
+
+// Spec version of UVC device
+UINT g_chUVCversion = 0;
+
+// Base address of the USBDEVICEINFO for device we're parsing
+PUSBDEVICEINFO CurrentUSBDeviceInfo = NULL;
+
+// Base address of the Configuration descriptor we're parsing
+PUSB_CONFIGURATION_DESCRIPTOR  CurrentConfigDesc = NULL;
+
+// Length of the current configuration descriptor
+DWORD dwConfigLength = 0;
+// Our current position from the beginning of the config descriptor
+DWORD dwConfigIndex = 0;
+
+int gDeviceSpeed = 0;
+
+// Save the current Configuration starting and ending addresses
+// Used in ValidateDescAddress()
+//
+PUSB_CONFIGURATION_DESCRIPTOR   g_pConfigDesc = NULL;
+PSTRING_DESCRIPTOR_NODE         g_pStringDescs = NULL;
+PUCHAR                          g_descEnd = NULL;
+
+/*****************************************************************************
 G L O B A L S    P R I V A T E    T O    T H I S    F I L E
 *****************************************************************************/
 

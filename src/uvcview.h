@@ -24,6 +24,8 @@ Revision History:
 /*****************************************************************************
  I N C L U D E S
 *****************************************************************************/
+#include "version.h" // Must come before <windows.h>
+
 #include <windows.h>
 #include <windowsx.h>
 #include <initguid.h>
@@ -373,16 +375,16 @@ typedef struct _DEVICE_GUID_LIST {
 // USBVIEW.C
 //
 
-BOOL gDoConfigDesc;
-BOOL gDoAnnotation;
-BOOL gLogDebug;
-int  TotalHubs;
+extern BOOL gDoConfigDesc;
+extern BOOL gDoAnnotation;
+extern BOOL gLogDebug;
+extern int  TotalHubs;
 
 //
 // ENUM.C
 //
 
-PCHAR ConnectionStatuses[];
+extern PCHAR ConnectionStatuses[];
 
 //
 // DISPVID.C
@@ -394,40 +396,41 @@ DEFINE_GUID(NV12_Format,0x3231564EL,0x0000,0x0010,0x80,0x00,0x00,0xAA,0x00,0x38,
 DEFINE_GUID(H264_Format,0x34363248, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
 #endif
 
-// The following flags/variables are all initialized in Display.c InitializePerDeviceSettings()
+// The following flags/variables are all defined in Display.c and initialized in
+// InitializePerDeviceSettings()
 //
 // Save the default frame from the MJPEG, Uncompressed, Vendor and Frame Based Format descriptor
 // Check for this when processing the individual Frame descriptors
-UCHAR   g_chMJPEGFrameDefault;
-UCHAR   g_chUNCFrameDefault;
-UCHAR   g_chVendorFrameDefault;
-UCHAR   g_chFrameBasedFrameDefault;
+extern UCHAR   g_chMJPEGFrameDefault;
+extern UCHAR   g_chUNCFrameDefault;
+extern UCHAR   g_chVendorFrameDefault;
+extern UCHAR   g_chFrameBasedFrameDefault;
 
 // Spec version of UVC device
-UINT g_chUVCversion;
+extern UINT g_chUVCversion;
 
 // Base address of the USBDEVICEINFO for device we're parsing
-PUSBDEVICEINFO CurrentUSBDeviceInfo;
+extern PUSBDEVICEINFO CurrentUSBDeviceInfo;
 
 // Base address of the Configuration descriptor we're parsing
-PUSB_CONFIGURATION_DESCRIPTOR  CurrentConfigDesc;
+extern PUSB_CONFIGURATION_DESCRIPTOR  CurrentConfigDesc;
 
 // Length of the current configuration descriptor
-DWORD dwConfigLength;
+extern DWORD dwConfigLength;
 // Our current position from the beginning of the config descriptor
-DWORD dwConfigIndex;
+extern DWORD dwConfigIndex;
 
 //
 // DISPLAY.C
 //
-int gDeviceSpeed;
+extern int gDeviceSpeed;
 
 // Save the current Configuration starting and ending addresses
 // Used in ValidateDescAddress()
 //
-PUSB_CONFIGURATION_DESCRIPTOR   g_pConfigDesc;
-PSTRING_DESCRIPTOR_NODE         g_pStringDescs;
-PUCHAR                          g_descEnd;
+extern PUSB_CONFIGURATION_DESCRIPTOR   g_pConfigDesc;
+extern PSTRING_DESCRIPTOR_NODE         g_pStringDescs;
+extern PUCHAR                          g_descEnd;
 
 /*****************************************************************************
  F U N C T I O N    P R O T O T Y P E S

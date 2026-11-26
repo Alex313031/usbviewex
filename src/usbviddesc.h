@@ -22,6 +22,9 @@ Revision History:
 
 --*/
 
+#ifndef USBVIEW_USBVIDDESC_H_
+#define USBVIEW_USBVIDDESC_H_
+
 #pragma pack(push, 1)
 
 /*****************************************************************************
@@ -741,3 +744,5 @@ typedef struct _USB_VIDEO_MEDIA_TRANSPORT_OUTPUT_DESCRIPTOR {
 *PUSB_VIDEO_MEDIA_TRANSPORT_OUTPUT_DESCRIPTOR;
 
 #pragma pack(pop)
+
+#endif // USBVIEW_USBVIDDESC_H_

@@ -65,6 +65,9 @@
     <ClInclude Include="src\uvcview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\vndrlist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,9 +84,6 @@
     <None Include="src\hub.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\monitor.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="src\port.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -96,7 +96,19 @@
     <None Include="src\ssusb.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="src\small.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\sysdm.ico">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="src\usb.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\usbview.htm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\usbview.manifest">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

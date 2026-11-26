@@ -371,7 +371,9 @@
 //
 // BEGIN - VDC Descriptor and Control Structures
 //
+#ifndef __MINGW32__
 #pragma warning( disable : 4200 ) // Allow zero-sized arrays at end of structs
+#endif // __MINGW32__
 #pragma pack( push, vdc_descriptor_structs, 1)
 
 // Video Specific Descriptor
@@ -1096,7 +1098,9 @@ typedef struct _VS_PROBE_COMMIT_CONTROL2
 } VS_PROBE_COMMIT_CONTROL2, *PVS_PROBE_COMMIT_CONTROL2;
 
 #pragma pack( pop, vdc_descriptor_structs )
+#ifndef __MINGW32__
 #pragma warning( default : 4200 ) 
+#endif // __MINGW32__
 
 
 //

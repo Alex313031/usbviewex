@@ -45,6 +45,9 @@
   </ImportGroup>
   <PropertyGroup>
     <TargetName>usbview</TargetName>
+    <!-- The manifest is embedded by src\uvcview.rc (usbview.manifest); a second,
+         linker-generated one would be a duplicate resource. -->
+    <GenerateManifest>false</GenerateManifest>
     <OutArch>$(Platform)</OutArch>
     <OutArch Condition="'$(Platform)'=='Win32'">x86</OutArch>
     <OutDir>$(SolutionDir)out\$(OutArch)\$(Configuration)\</OutDir>
@@ -78,6 +81,9 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
@@ -110,6 +116,7 @@
     <ClInclude Include="src\usbviddesc.h" />
     <ClInclude Include="src\uvcdesc.h" />
     <ClInclude Include="src\uvcview.h" />
+    <ClInclude Include="src\version.h" />
     <ClInclude Include="src\vndrlist.h" />
   </ItemGroup>
   <ItemGroup>
@@ -118,12 +125,15 @@
   <ItemGroup>
     <None Include="src\bang.ico" />
     <None Include="src\hub.ico" />
-    <None Include="src\monitor.ico" />
     <None Include="src\port.ico" />
+    <None Include="src\small.ico" />
     <None Include="src\split.cur" />
     <None Include="src\ssport.ico" />
     <None Include="src\ssusb.ico" />
+    <None Include="src\sysdm.ico" />
     <None Include="src\usb.ico" />
+    <None Include="src\usbview.htm" />
+    <None Include="src\usbview.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

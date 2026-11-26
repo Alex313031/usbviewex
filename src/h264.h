@@ -27,8 +27,7 @@ extern UCHAR g_numberOfUncompressedFrameFrameDescriptors;
 //*****************************************************************************
 
 //Version information printed at lower left of UI Window and top of output text window
-#define USBVIEW_MAJOR_VERSION   2
-#define USBVIEW_MINOR_VERSION   0
+// (USBVIEW_MAJOR_VERSION / USBVIEW_MINOR_VERSION are in version.h)
 #define UVC_SPEC_MAJOR_VERSION  1
 #define UVC_SPEC_MINOR_VERSION  5
 
@@ -98,8 +97,10 @@ typedef struct _VIDEO_FORMAT_H264
 #pragma pack(push, 1)       // pack on a 1 byte boundary
 
 // Disable warning on zero sized array in CPP compiler
+#ifndef __MINGW32__
 #pragma warning(push)
 #pragma warning(disable:4200) // Zero sized array
+#endif // __MINGW32__
 
 typedef struct _VIDEO_FRAME_H264
 {                                               // offset (in bytes):          
@@ -124,14 +125,18 @@ typedef struct _VIDEO_FRAME_H264
     UCHAR  bNumFrameIntervals;                  // 43
     ULONG  dwFrameInterval[];                   // 44 variable-length parameter
 } VIDEO_FRAME_H264, *PVIDEO_FRAME_H264;
+#ifndef __MINGW32__
 #pragma warning(pop)
+#endif // __MINGW32__
 #pragma pack(pop)
 
 
 // VideoControl Encoding Unit Descriptor
 #pragma pack(push, 1)       // pack on a 1 byte boundary
+#ifndef __MINGW32__
 #pragma warning(push)
 #pragma warning(disable:4200) // Zero sized array
+#endif // __MINGW32__
 typedef struct //_VIDEO_ENCODING_UNIT
 {                                               // offset (in bytes):           
     UCHAR bLength;                              // 0
@@ -145,7 +150,9 @@ typedef struct //_VIDEO_ENCODING_UNIT
 } VIDEO_ENCODING_UNIT, *PVIDEO_ENCODING_UNIT;
 // after bmControls[] there is also the variable-length parameter (bControlSize specifies the size:
 // UCHAR bmControlsRunTime[]
+#ifndef __MINGW32__
 #pragma warning(pop)
+#endif // __MINGW32__
 #pragma pack(pop)
 
 

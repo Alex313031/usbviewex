@@ -149,6 +149,11 @@ USBView_OnSize (
                 int  cy
                 );
 
+VOID
+USBView_OnMinMaxInfo (
+                      LPARAM lParam
+                      );
+
 LRESULT
 USBView_OnNotify (
                   HWND    hWnd,
@@ -539,7 +544,9 @@ HRESULT InitializeConsole()
         // Output is not redirected and GUI application do not have console by default, create a console
         if(AllocConsole())
         {
+#ifndef __MINGW32__
 #pragma warning(disable:4996) // We don' need the FILE * returned by freopen
+#endif // __MINGW32__
             // Reopen STDOUT , STDIN and STDERR
             if((freopen("conout$", "w", stdout) != NULL) &&
                     (freopen("conin$", "r", stdin)  != NULL) &&
@@ -548,7 +555,9 @@ HRESULT InitializeConsole()
                 gbConsoleInitialized = TRUE;
                 ghStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             }
+#ifndef __MINGW32__
 #pragma warning(default:4996)
+#endif // __MINGW32__
         }
     }
 
@@ -919,6 +928,7 @@ MainDlgProc (
 
         HANDLE_MSG(hWnd, WM_INITDIALOG,     USBView_OnInitDialog);
         HANDLE_MSG(hWnd, WM_CLOSE,          USBView_OnClose);
+        HANDLE_MSG(hWnd, WM_DESTROY,        USBView_OnClose);
         HANDLE_MSG(hWnd, WM_COMMAND,        USBView_OnCommand);
         HANDLE_MSG(hWnd, WM_LBUTTONDOWN,    USBView_OnLButtonDown);
         HANDLE_MSG(hWnd, WM_LBUTTONUP,      USBView_OnLButtonUp);
@@ -926,6 +936,10 @@ MainDlgProc (
         HANDLE_MSG(hWnd, WM_SIZE,           USBView_OnSize);
         HANDLE_MSG(hWnd, WM_NOTIFY,         USBView_OnNotify);
         HANDLE_MSG(hWnd, WM_DEVICECHANGE,   USBView_OnDeviceChange);
+
+    case WM_GETMINMAXINFO:
+        USBView_OnMinMaxInfo(lParam);
+        break;
     }
 
     return 0;
@@ -979,6 +993,11 @@ USBView_OnInitDialog (
     InitializeListHead(&gDeviceList.ListHead);
 
     //end add
+
+    // Set the title bar / taskbar icon of the main window
+    hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_ICON));
+    SendMessage(hWnd, WM_SETICON, ICON_BIG, (LPARAM) hicon);
+    SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM) hicon);
 
     ghTreeWnd = GetDlgItem(hWnd, IDC_TREE);
 
@@ -1365,6 +1384,13 @@ USBView_OnCommand (
             (DLGPROC) AboutDlgProc);
         break;
 
+    case IDM_HELP:
+        MessageBox(ghMainWnd,
+            "No Help implemented for USBViewEx yet...",
+            "Help",
+            MB_OK | MB_ICONINFORMATION);
+        break;
+
     case ID_EXIT:
         UnregisterDeviceNotification(gNotifyDevHandle);
         UnregisterDeviceNotification(gNotifyHubHandle);
@@ -1473,6 +1499,24 @@ USBView_OnSize (
     UNREFERENCED_PARAMETER(cy);
 
     ResizeWindows(FALSE, 0);
+}
+
+/*****************************************************************************
+
+USBView_OnMinMaxInfo()
+
+*****************************************************************************/
+
+VOID
+USBView_OnMinMaxInfo (
+                      LPARAM lParam
+                      )
+{
+    // Set the minimum size for the window
+    LPMINMAXINFO pMinMaxInfo = (LPMINMAXINFO) lParam;
+
+    pMinMaxInfo->ptMinTrackSize.x = 300;
+    pMinMaxInfo->ptMinTrackSize.y = 200;
 }
 
 /*****************************************************************************
@@ -1649,21 +1693,11 @@ AboutDlgProc (
             HRESULT hr;
             char TextBuffer[TEXT_ITEM_LENGTH];
             HWND hItem;
+            HICON hSmallIcon;
 
-            hItem = GetDlgItem(hwnd, IDC_VERSION);
-
-            if (hItem != NULL)
-            {
-                hr = StringCbPrintfA(TextBuffer,
-                                     sizeof(TextBuffer),
-                                     "USBView version: %d.%d",
-                                     USBVIEW_MAJOR_VERSION,
-                                     USBVIEW_MINOR_VERSION);
-                if (SUCCEEDED(hr))
-                {
-                    SetWindowText(hItem,TextBuffer);
-                }
-            }
+            hSmallIcon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_SMALL));
+            SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM) hSmallIcon);
+            SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM) hSmallIcon);
 
             hItem = GetDlgItem(hwnd, IDC_UVCVERSION);
 
