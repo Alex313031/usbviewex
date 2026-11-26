@@ -1,4 +1,4 @@
-# USBViewEx
+# USBViewEx <img src="assets/icon.png">
 
 A fork of [Microsoft's USBView](https://github.com/Microsoft/Windows-driver-samples/tree/main/usb/usbview) Windows Driver Kit sample, a small Win32 app that shows detailed USB device info.
 
