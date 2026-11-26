@@ -805,7 +805,7 @@ CreateMainWindow (
 
     GetWindowRect(ghMainWnd, &rc);
 
-    gBarLocation = (rc.right - rc.left) / 3;
+    gBarLocation = (rc.right - rc.left) / 2;
 
     ResizeWindows(FALSE, 0);
 
@@ -1698,6 +1698,24 @@ AboutDlgProc (
             hSmallIcon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_SMALL));
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM) hSmallIcon);
             SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM) hSmallIcon);
+
+            // The name/version line is filled in here rather than in the .rc,
+            // because rc.exe does not concatenate adjacent string literals in
+            // dialog control text.
+            hItem = GetDlgItem(hwnd, IDC_VERSION);
+
+            if (hItem != NULL)
+            {
+                hr = StringCbPrintfA(TextBuffer,
+                                     sizeof(TextBuffer),
+                                     "USBViewEx v%d.%d",
+                                     USBVIEW_MAJOR_VERSION,
+                                     USBVIEW_MINOR_VERSION);
+                if (SUCCEEDED(hr))
+                {
+                    SetWindowText(hItem,TextBuffer);
+                }
+            }
 
             hItem = GetDlgItem(hwnd, IDC_UVCVERSION);
 

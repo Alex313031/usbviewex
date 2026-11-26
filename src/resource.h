@@ -33,6 +33,7 @@ Copyright (c) 1998-2008 Microsoft Corporation, All Rights Reserved.
 #define IDS_USBVIEW_SAVED_TO            2010
 #define IDS_USBVIEW_INVALID_FILENAME    2011
 
+#define IDC_VERSION                     3000
 #define IDC_UVCVERSION                  3001
 
 #define ID_EXIT                         40001

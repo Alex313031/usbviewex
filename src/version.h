@@ -47,8 +47,7 @@
 // \251 is the (c) symbol, \256 is the (R) symbol
 #define ABOUT_NAME      "USBViewEx"
 #define ABOUT_TITLE     "About USBViewEx"
-#define ABOUT_CONTENT   "USBViewEx v" VERSION_STRING
-#define ABOUT_COPYRIGHT L"Copyright \251 1996-2026 Microsoft\256 and Alex313031"
+#define ABOUT_COPYRIGHT L"Copyright \251 2025-2026 Alex313031"
 #define LEGAL_COPYRIGHT L"\251 1996-2026 Microsoft\256 and Alex313031"
 
 #endif // USBVIEW_VERSION_H_
