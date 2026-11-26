@@ -466,8 +466,15 @@ EnumerateHostController (
         ULONG   ven, dev, subsys, rev;
         ven = dev = subsys = rev = 0;
 
-        if (sscanf_s(DevProps->DeviceId,
-                   "PCI\\VEN_%x&DEV_%x&SUBSYS_%x&REV_%x",
+        // Plain sscanf rather than sscanf_s: msvcrt.dll only exports the
+        // latter from Windows Vista on. There are no string or character
+        // conversions here, so the two behave identically. %lx because the
+        // targets are ULONGs.
+#ifndef __MINGW32__
+#pragma warning(suppress:4996) // sscanf "may be unsafe"
+#endif // __MINGW32__
+        if (sscanf(DevProps->DeviceId,
+                   "PCI\\VEN_%lx&DEV_%lx&SUBSYS_%lx&REV_%lx",
                    &ven, &dev, &subsys, &rev) != 4)
         {
             OOPS();

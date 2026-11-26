@@ -13,10 +13,9 @@
 #endif // __MINGW32__
 
 #ifndef _WIN32_WINNT
- // TODO: lower to 0x0501 (Windows XP). The USB 3 structures and IOCTLs in
- // usbioctl.h are only declared for Windows 8 (0x0602) and up, so the sources
- // do not compile below that until we carry our own copies of them.
- #define _WIN32_WINNT 0x0602 // Windows 8
+ // The newer USB declarations that the Windows headers hide at this level
+ // come from xhci.h instead.
+ #define _WIN32_WINNT 0x0501 // Windows XP
 #endif // _WIN32_WINNT
 #ifndef _WIN64_WINNT
  #define _WIN64_WINNT 0x0502 // Minimum version for 64 bit, Windows Server 2003

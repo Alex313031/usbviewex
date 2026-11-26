@@ -52,7 +52,8 @@ HEADERS = \
     $(SRCDIR)\uvcdesc.h \
     $(SRCDIR)\uvcview.h \
     $(SRCDIR)\version.h \
-    $(SRCDIR)\vndrlist.h
+    $(SRCDIR)\vndrlist.h \
+    $(SRCDIR)\xhci.h
 
 RC_DEPS = \
     $(SRCDIR)\uvcview.rc \

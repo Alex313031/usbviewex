@@ -71,6 +71,9 @@
     <ClInclude Include="src\vndrlist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\xhci.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\uvcview.rc">

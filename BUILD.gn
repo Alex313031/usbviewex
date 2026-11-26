@@ -33,6 +33,7 @@ executable("usbview") {
     "src/uvcview.rc",
     "src/version.h",
     "src/vndrlist.h",
+    "src/xhci.h",
   ]
 }
 
@@ -42,15 +43,6 @@ config("usbview_config") {
     # A handful of loop counters in the upstream display code are set but
     # never read.
     "-Wno-unused-but-set-variable",
-
-    # TODO: remove once the sources build for Windows XP. gn-legacy passes
-    # -D_WIN32_WINNT/-DWINVER for the configured winver, but the USB 3
-    # structures and IOCTLs in usbioctl.h are only declared for Windows 8
-    # (0x0602) and up. See also src/version.h.
-    "-U_WIN32_WINNT",
-    "-D_WIN32_WINNT=0x0602",
-    "-UWINVER",
-    "-DWINVER=0x0602",
   ]
 
   if (use_llvm) {

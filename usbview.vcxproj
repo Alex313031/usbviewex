@@ -126,6 +126,7 @@
     <ClInclude Include="src\uvcview.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\vndrlist.h" />
+    <ClInclude Include="src\xhci.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\uvcview.rc" />

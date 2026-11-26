@@ -58,6 +58,10 @@ Revision History:
 #include <devpkey.h>
 #include <math.h>
 
+// USB 3 / xHCI era declarations that <usbioctl.h> hides when building for
+// Windows XP
+#include "xhci.h"
+
 // This is mostly a private USB Audio descriptor header
 #include "usbdesc.h"
 
