@@ -45,8 +45,10 @@
   </ImportGroup>
   <PropertyGroup>
     <TargetName>usbview</TargetName>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\obj\</IntDir>
+    <OutArch>$(Platform)</OutArch>
+    <OutArch Condition="'$(Platform)'=='Win32'">x86</OutArch>
+    <OutDir>$(SolutionDir)out\$(OutArch)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)out\$(OutArch)\$(Configuration)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <LinkIncremental>true</LinkIncremental>

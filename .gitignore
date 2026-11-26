@@ -25,6 +25,7 @@ Thumbs.db
 *.pdb
 *.res
 *.stamp
+/out/
 /x86/
 /x64/
 *Debug/
@@ -33,7 +34,6 @@ Thumbs.db
 *.lib
 [Uu]sbview.exe
 [Uu]sbviewex.exe
-
 
 # Local reference sources, never committed
 /temp/
