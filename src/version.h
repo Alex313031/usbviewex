@@ -38,7 +38,7 @@
 // Microsoft's last USBView was 2.0; USBViewEx continues from there.
 #define USBVIEW_MAJOR_VERSION   2
 #define USBVIEW_MINOR_VERSION   1
-#define USBVIEW_BUILD_VERSION   1
+#define USBVIEW_BUILD_VERSION   2
 
 // "major.minor.build", e.g. "2.1.0". Built from the three numbers above, so
 // those are the only place the version needs changing.
