@@ -1,0 +1,106 @@
+name: Build USBViewEx
+
+on:
+  workflow_dispatch:
+
+# Least privilege: only checkout needs the token. Artifact upload uses the
+# runtime token, not GITHUB_TOKEN scopes. Widen to contents:write only if this
+# workflow later publishes releases.
+permissions:
+  contents: read
+
+# Update MinGW version here
+env:
+  MINGW_BASE_URL: https://github.com/Alex313031/mingw-build/releases/download/20261108
+
+jobs:
+  build:
+    name: MinGW Build x86/x64
+    # Cross-compiled on Linux with our own MinGW fork, which still targets
+    # legacy Windows. The .exe files are statically linked PE binaries with
+    # the XP baseline (PE subsystem 5.1 on x86, 5.2 on x64), independent of
+    # the runner they were built on.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y make binutils wget zip unzip
+
+      - name: Download Custom MinGW
+        # Use our own MinGW fork for compiling Windows builds.
+        # Each zip unpacks to a dir named after its target arch (i686/, x64/).
+        run: |
+          for arch in i686 x64; do
+            wget "${MINGW_BASE_URL}/mingw_gcc_linux_${arch}.zip"
+            unzip -o "mingw_gcc_linux_${arch}.zip" -d "$HOME"
+            rm -f "mingw_gcc_linux_${arch}.zip"
+          done
+          # Fail fast if either cross-compiler can't run on this host.
+          "$HOME/i686/bin/i686-w64-mingw32-gcc" --version
+          "$HOME/x64/bin/x86_64-w64-mingw32-gcc" --version
+          echo "$HOME/x64/bin" >> "$GITHUB_PATH"
+          echo "$HOME/i686/bin" >> "$GITHUB_PATH"
+
+      # Release builds from the GNUmakefile, one per toolchain prefix.
+      - name: Build x86
+        # Output: out/mingw/x86/Release/usbview.exe
+        run: |
+          make CROSS=i686-w64-mingw32-
+
+      - name: Build x64
+        # Output: out/mingw/x64/Release/usbview.exe
+        run: |
+          make CROSS=x86_64-w64-mingw32-
+
+      - name: Check Binaries
+        # The whole point of building with this toolchain is that the result
+        # starts on Windows XP, so fail the run if the PE header says
+        # otherwise instead of finding out on an XP machine.
+        run: |
+          check() {  # check <exe> <machine> <subsystem minor version>
+            local headers
+            headers=$(x86_64-w64-mingw32-objdump -p "$1")
+            echo "$1:"
+            echo "$headers" | grep -E 'file format|MajorSubsystemVersion|MinorSubsystemVersion|DLL Name'
+            echo "$headers" | grep -q "file format $2" \
+              || { echo "::error::$1 is not $2"; return 1; }
+            echo "$headers" | grep -Eq 'MajorSubsystemVersion[[:space:]]+5$' \
+              || { echo "::error::$1 subsystem major version is not 5"; return 1; }
+            echo "$headers" | grep -Eq "MinorSubsystemVersion[[:space:]]+$3\$" \
+              || { echo "::error::$1 subsystem minor version is not $3"; return 1; }
+          }
+          check out/mingw/x86/Release/usbview.exe pei-i386 1
+          check out/mingw/x64/Release/usbview.exe pei-x86-64 2
+
+      - name: Package .zips
+        # One zip per architecture, named usbviewex_<version>_<arch>.zip, each
+        # holding usbview.exe, LICENSE.md and usbview.html at the top level.
+        # The version comes from src/version.h so it cannot drift from the exe.
+        # The short commit SHA goes into the artifact name.
+        run: |
+          ver() { sed -n "s/^#define USBVIEW_$1_VERSION[[:space:]]*\([0-9][0-9]*\).*/\1/p" src/version.h; }
+          VERSION="$(ver MAJOR).$(ver MINOR).$(ver BUILD)"
+          case "$VERSION" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::Could not read the version from src/version.h (got '$VERSION')"; exit 1 ;;
+          esac
+          for arch in x86 x64; do
+            zip -j "usbviewex_${VERSION}_${arch}.zip" \
+              "out/mingw/${arch}/Release/usbview.exe" LICENSE.md src/usbview.html
+            unzip -l "usbviewex_${VERSION}_${arch}.zip"
+          done
+          SHA=${{ github.sha }}
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "SHA_SHORT=${SHA:0:6}" >> "$GITHUB_ENV"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: usbviewex_${{ env.VERSION }}_${{ env.SHA_SHORT }}
+          path: usbviewex_*.zip
+          if-no-files-found: error
