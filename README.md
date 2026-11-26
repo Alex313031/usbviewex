@@ -2,6 +2,8 @@
 
 A fork of [Microsoft's USBView](https://github.com/Microsoft/Windows-driver-samples/tree/main/usb/usbview) Windows Driver Kit sample, a small Win32 app that shows detailed USB device info.
 
+![USBViewEx running on Windows XP](./assets/screenshot.png)
+
 ## Synopsis
 
 It contains the nice to haves of the latest source, while preserving the styling and legacy OS support of the original [7.1 WDK](https://www.microsoft.com/en-us/download/details.aspx?id=11800) one.
