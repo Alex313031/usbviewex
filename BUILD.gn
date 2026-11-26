@@ -2,6 +2,8 @@
 
 # gn-legacy build for USBViewEx.
 
+import("//build/config/win/win.gni")  # use_clang_cl
+
 group("usbview_all") {
   public_deps = [ ":usbview" ]
 }
@@ -53,6 +55,15 @@ config("usbview_config") {
       # Clang-only style warnings in the upstream sources.
       "-Wno-parentheses-equality",
     ]
+  }
+
+  # Always ISO C11, like the other build systems, whatever the c_std build
+  # argument is set to. These come after the toolchain's own -std flag on the
+  # command line, and the last one wins.
+  if (use_clang_cl) {
+    cflags_c = [ "/clang:-std=c11" ]
+  } else {
+    cflags_c = [ "-std=c11" ]
   }
 
   # kernel32, user32, shell32 and comctl32 come from the default
