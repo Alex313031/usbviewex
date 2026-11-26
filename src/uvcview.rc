@@ -58,11 +58,14 @@ STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION ABOUT_TITLE
 FONT 8, "MS Shell Dlg"
 BEGIN
+    // The OK button comes first so that it, not the version text, gets the
+    // keyboard focus when the dialog opens. An edit control that receives the
+    // initial focus selects (highlights) all of its text.
+    DEFPUSHBUTTON   "OK",            IDOK,           164, 54, 40, 14
     ICON            IDI_ICON,        IDC_STATIC,     12, 12, 20, 20
     EDITTEXT        IDC_VERSION,                     46, 12, 162, 8, ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     LTEXT           ABOUT_COPYRIGHT, IDC_STATIC,     46, 24, 162, 8
     EDITTEXT        IDC_UVCVERSION,                  46, 36, 162, 8, ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
-    DEFPUSHBUTTON   "OK",            IDOK,           164, 54, 40, 14
 END
 
 
