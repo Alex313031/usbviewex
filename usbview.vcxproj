@@ -132,16 +132,16 @@
     <ResourceCompile Include="src\uvcview.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\bang.ico" />
-    <None Include="src\hub.ico" />
-    <None Include="src\port.ico" />
-    <None Include="src\small.ico" />
-    <None Include="src\split.cur" />
-    <None Include="src\ssport.ico" />
-    <None Include="src\ssusb.ico" />
-    <None Include="src\sysdm.ico" />
-    <None Include="src\usb.ico" />
-    <None Include="src\usbview.htm" />
+    <None Include="src\res\bang.ico" />
+    <None Include="src\res\hub.ico" />
+    <None Include="src\res\port.ico" />
+    <None Include="src\res\small.ico" />
+    <None Include="src\res\split.cur" />
+    <None Include="src\res\ssport.ico" />
+    <None Include="src\res\ssusb.ico" />
+    <None Include="src\res\sysdm.ico" />
+    <None Include="src\res\usb.ico" />
+    <None Include="src\usbview.html" />
     <None Include="src\usbview.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

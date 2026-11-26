@@ -15,20 +15,20 @@ CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "usbview.manifest"
 //
 // ICON
 //
-IDI_ICON                ICON    DISCARDABLE     "usb.ico"
-IDI_BADICON             ICON    DISCARDABLE     "bang.ico"
-IDI_COMPUTER            ICON    DISCARDABLE     "sysdm.ico"
-IDI_HUB                 ICON    DISCARDABLE     "hub.ico"
-IDI_NODEVICE            ICON    DISCARDABLE     "port.ico"
-IDI_NOSSDEVICE          ICON    DISCARDABLE     "ssport.ico"
-IDI_SSICON              ICON    DISCARDABLE     "ssusb.ico"
-IDI_SMALL               ICON    DISCARDABLE     "small.ico"
+IDI_ICON                ICON    DISCARDABLE     "res/usb.ico"
+IDI_BADICON             ICON    DISCARDABLE     "res/bang.ico"
+IDI_COMPUTER            ICON    DISCARDABLE     "res/sysdm.ico"
+IDI_HUB                 ICON    DISCARDABLE     "res/hub.ico"
+IDI_NODEVICE            ICON    DISCARDABLE     "res/port.ico"
+IDI_NOSSDEVICE          ICON    DISCARDABLE     "res/ssport.ico"
+IDI_SSICON              ICON    DISCARDABLE     "res/ssusb.ico"
+IDI_SMALL               ICON    DISCARDABLE     "res/small.ico"
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // Cursor
 //
-IDC_SPLIT               CURSOR  DISCARDABLE     "split.cur"
+IDC_SPLIT               CURSOR  DISCARDABLE     "res/split.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //

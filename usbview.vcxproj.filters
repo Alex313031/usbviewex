@@ -81,34 +81,34 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\bang.ico">
+    <None Include="src\res\bang.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\hub.ico">
+    <None Include="src\res\hub.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\port.ico">
+    <None Include="src\res\port.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\split.cur">
+    <None Include="src\res\split.cur">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\ssport.ico">
+    <None Include="src\res\ssport.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\ssusb.ico">
+    <None Include="src\res\ssusb.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\small.ico">
+    <None Include="src\res\small.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\sysdm.ico">
+    <None Include="src\res\sysdm.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\usb.ico">
+    <None Include="src\res\usb.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\usbview.htm">
+    <None Include="src\usbview.html">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="src\usbview.manifest">

@@ -60,8 +60,8 @@ RC_DEPS = \
     $(SRCDIR)\resource.h \
     $(SRCDIR)\version.h \
     $(SRCDIR)\usbview.manifest \
-    $(SRCDIR)\*.ico \
-    $(SRCDIR)\*.cur
+    $(SRCDIR)\res\*.ico \
+    $(SRCDIR)\res\*.cur
 
 # The sources are ANSI, so no /DUNICODE.
 # The C runtime is linked statically (/MT, /MTd below), so the exe does not

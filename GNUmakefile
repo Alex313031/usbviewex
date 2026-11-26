@@ -54,7 +54,7 @@ OBJECTS := $(SOURCES:%.c=$(OBJDIR)/%.o) $(OBJDIR)/uvcview.res.o
 # manifest itself, so they have to be listed by hand.
 RC_DEPS := $(SRCDIR)/uvcview.rc $(SRCDIR)/resource.h $(SRCDIR)/version.h \
            $(SRCDIR)/usbview.manifest \
-           $(wildcard $(SRCDIR)/*.ico) $(wildcard $(SRCDIR)/*.cur)
+           $(wildcard $(SRCDIR)/res/*.ico) $(wildcard $(SRCDIR)/res/*.cur)
 
 # The sources are ANSI, so no -DUNICODE / -municode.
 CPPFLAGS := -I$(SRCDIR) -D_MBCS
