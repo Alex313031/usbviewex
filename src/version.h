@@ -39,9 +39,13 @@
 // Microsoft's last USBView was 2.0; USBViewEx continues from there.
 #define USBVIEW_MAJOR_VERSION   2
 #define USBVIEW_MINOR_VERSION   1
-#define USBVIEW_BUILD_VERSION   0
+#define USBVIEW_BUILD_VERSION   1
 
-#define VERSION_STRING STRINGIZE(USBVIEW_MAJOR_VERSION) "." STRINGIZE(USBVIEW_MINOR_VERSION)
+// "major.minor.build", e.g. "2.1.0". Built from the three numbers above, so
+// those are the only place the version needs changing.
+#define VERSION_STRING STRINGIZE(USBVIEW_MAJOR_VERSION) "." \
+                       STRINGIZE(USBVIEW_MINOR_VERSION) "." \
+                       STRINGIZE(USBVIEW_BUILD_VERSION)
 
 // Branding strings, used by the .rc file.
 // \251 is the (c) symbol, \256 is the (R) symbol

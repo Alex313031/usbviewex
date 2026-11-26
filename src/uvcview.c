@@ -1653,8 +1653,8 @@ VOID RefreshTree (VOID)
         memset(statusText, 0, sizeof(statusText));
         StringCchPrintf(statusText, sizeof(statusText),
 #ifdef H264_SUPPORT
-        "UVC Spec Version: %d.%d Version: %d.%d Devices Connected: %d   Hubs Connected: %d",
-        UVC_SPEC_MAJOR_VERSION, UVC_SPEC_MINOR_VERSION, USBVIEW_MAJOR_VERSION, USBVIEW_MINOR_VERSION,
+        "UVC Spec Version: %d.%d Version: %s Devices Connected: %d   Hubs Connected: %d",
+        UVC_SPEC_MAJOR_VERSION, UVC_SPEC_MINOR_VERSION, VERSION_STRING,
         devicesConnected, TotalHubs);
 #else
         "Devices Connected: %d   Hubs Connected: %d",
@@ -1708,9 +1708,8 @@ AboutDlgProc (
             {
                 hr = StringCbPrintfA(TextBuffer,
                                      sizeof(TextBuffer),
-                                     "USBViewEx v%d.%d",
-                                     USBVIEW_MAJOR_VERSION,
-                                     USBVIEW_MINOR_VERSION);
+                                     "USBViewEx v%s",
+                                     VERSION_STRING);
                 if (SUCCEEDED(hr))
                 {
                     SetWindowText(hItem,TextBuffer);

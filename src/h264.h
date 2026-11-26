@@ -27,7 +27,7 @@ extern UCHAR g_numberOfUncompressedFrameFrameDescriptors;
 //*****************************************************************************
 
 //Version information printed at lower left of UI Window and top of output text window
-// (USBVIEW_MAJOR_VERSION / USBVIEW_MINOR_VERSION are in version.h)
+// (The USBView version numbers are in version.h)
 #define UVC_SPEC_MAJOR_VERSION  1
 #define UVC_SPEC_MINOR_VERSION  5
 
