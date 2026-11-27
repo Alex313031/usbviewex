@@ -15,13 +15,15 @@ CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "usbview.manifest"
 //
 // ICON
 //
-IDI_ICON                ICON    DISCARDABLE     "res/usb.ico"
+IDI_MAINFRAME           ICON    DISCARDABLE     "res/usbview.ico"
 IDI_BADICON             ICON    DISCARDABLE     "res/bang.ico"
 IDI_COMPUTER            ICON    DISCARDABLE     "res/sysdm.ico"
 IDI_HUB                 ICON    DISCARDABLE     "res/hub.ico"
+IDI_USB                 ICON    DISCARDABLE     "res/usb.ico"
 IDI_NODEVICE            ICON    DISCARDABLE     "res/port.ico"
+IDI_SSUSB               ICON    DISCARDABLE     "res/ssusb.ico"
 IDI_NOSSDEVICE          ICON    DISCARDABLE     "res/ssport.ico"
-IDI_SSICON              ICON    DISCARDABLE     "res/ssusb.ico"
+IDI_HOST_CTRLR          ICON    DISCARDABLE     "res/hc.ico"
 IDI_SMALL               ICON    DISCARDABLE     "res/small.ico"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -63,7 +65,7 @@ BEGIN
     // keyboard focus when the dialog opens. An edit control that receives the
     // initial focus selects (highlights) all of its text.
     DEFPUSHBUTTON   "OK",            IDOK,           164, 54, 40, 14
-    ICON            IDI_ICON,        IDC_STATIC,     12, 12, 20, 20
+    ICON            IDI_MAINFRAME,   IDC_STATIC,     12, 12, 20, 20
     EDITTEXT        IDC_VERSION,                     46, 12, 162, 8, ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     LTEXT           ABOUT_COPYRIGHT, IDC_STATIC,     46, 24, 162, 8
     EDITTEXT        IDC_UVCVERSION,                  46, 36, 162, 8, ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER

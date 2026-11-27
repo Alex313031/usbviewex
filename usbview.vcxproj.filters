@@ -84,6 +84,9 @@
     <None Include="src\res\bang.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="src\res\hc.ico">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="src\res\hub.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -106,6 +109,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="src\res\usb.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\res\usbview.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="src\usbview.html">

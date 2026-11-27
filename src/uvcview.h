@@ -217,7 +217,8 @@ typedef enum _TREEICON
     GoodDeviceIcon,
     BadDeviceIcon,
     GoodSsDeviceIcon,
-    NoSsDeviceIcon
+    NoSsDeviceIcon,
+    HostControllerIcon
 } TREEICON;
 
 // Callback function for walking TreeView items

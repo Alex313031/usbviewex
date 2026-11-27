@@ -285,6 +285,7 @@ int             giHub            = 0;
 int             giNoDevice       = 0;
 int             giGoodSsDevice   = 0;
 int             giNoSsDevice     = 0;
+int             giHostController = 0;
 
 
 /*****************************************************************************
@@ -1141,22 +1142,33 @@ USBView_OnInitDialog (
     //end add
 
     // Set the title bar / taskbar icon of the main window
-    hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_ICON));
+    hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_MAINFRAME));
     SendMessage(hWnd, WM_SETICON, ICON_BIG, (LPARAM) hicon);
+
+    // usbview.ico has its own 16x16 image; ask for it by size, so the title
+    // bar does not get the 32x32 one scaled down
+    hicon = (HICON) LoadImage(ghInstance,
+                              MAKEINTRESOURCE(IDI_MAINFRAME),
+                              IMAGE_ICON,
+                              GetSystemMetrics(SM_CXSMICON),
+                              GetSystemMetrics(SM_CYSMICON),
+                              LR_SHARED);
     SendMessage(hWnd, WM_SETICON, ICON_SMALL, (LPARAM) hicon);
 
     ghTreeWnd = GetDlgItem(hWnd, IDC_TREE);
 
     //added
+    // ILC_MASK keeps each icon's transparency. Without a mask the transparent
+    // pixels of an icon are drawn as they are stored, which is black.
     if ((himl = ImageList_Create(15, 15,
-        FALSE, 2, 0)) == NULL)
+        ILC_COLOR24 | ILC_MASK, 8, 4)) == NULL)
     {
         OOPS();
     }
 
     if(himl != NULL)
     {
-        hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_ICON));
+        hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_USB));
         giGoodDevice = ImageList_AddIcon(himl, hicon);
 
         hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_BADICON));
@@ -1171,11 +1183,21 @@ USBView_OnInitDialog (
         hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_NODEVICE));
         giNoDevice = ImageList_AddIcon(himl, hicon);
 
-        hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_SSICON));
+        hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_SSUSB));
         giGoodSsDevice = ImageList_AddIcon(himl, hicon);
 
         hicon = LoadIcon(ghInstance, MAKEINTRESOURCE(IDI_NOSSDEVICE));
         giNoSsDevice = ImageList_AddIcon(himl, hicon);
+
+        // hc.ico has several sizes; take its 16x16 image rather than letting
+        // the image list scale the 32x32 one down
+        hicon = (HICON) LoadImage(ghInstance,
+                                  MAKEINTRESOURCE(IDI_HOST_CTRLR),
+                                  IMAGE_ICON,
+                                  16,
+                                  16,
+                                  LR_SHARED);
+        giHostController = ImageList_AddIcon(himl, hicon);
 
         TreeView_SetImageList(ghTreeWnd, himl, TVSIL_NORMAL);
         // end add
@@ -2062,6 +2084,11 @@ AddLeaf (
         case NoSsDeviceIcon:
             tvins.item.iImage = giNoSsDevice;
             tvins.item.iSelectedImage = giNoSsDevice;
+            break;
+
+        case HostControllerIcon:
+            tvins.item.iImage = giHostController;
+            tvins.item.iSelectedImage = giHostController;
             break;
 
         case BadDeviceIcon:

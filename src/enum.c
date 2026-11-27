@@ -549,7 +549,7 @@ EnumerateHostController (
     hHCItem = AddLeaf(hTreeParent,
                       (LPARAM)hcInfo,
                       leafName,
-                      hcInfo->Revision == UsbSuperSpeed ? GoodSsDeviceIcon : GoodDeviceIcon);
+                      HostControllerIcon);
 
     if (NULL == hHCItem)
     {

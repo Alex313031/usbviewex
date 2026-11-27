@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\res\bang.ico" />
+    <None Include="src\res\hc.ico" />
     <None Include="src\res\hub.ico" />
     <None Include="src\res\port.ico" />
     <None Include="src\res\small.ico" />
@@ -143,6 +144,7 @@
     <None Include="src\res\ssusb.ico" />
     <None Include="src\res\sysdm.ico" />
     <None Include="src\res\usb.ico" />
+    <None Include="src\res\usbview.ico" />
     <None Include="src\usbview.html" />
     <None Include="src\usbview.manifest" />
   </ItemGroup>
