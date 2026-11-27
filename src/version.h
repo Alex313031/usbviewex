@@ -15,7 +15,11 @@
 #ifndef _WIN32_WINNT
  // The newer USB declarations that the Windows headers hide at this level
  // come from xhci.h instead.
- #define _WIN32_WINNT 0x0501 // Windows XP
+ #ifdef __MINGW32__
+  #define _WIN32_WINNT 0x0500 // Windows 2000
+ #else
+  #define _WIN32_WINNT 0x0501 // Windows XP, the oldest MSVC can target
+ #endif // __MINGW32__
 #endif // _WIN32_WINNT
 #ifndef _WIN64_WINNT
  #define _WIN64_WINNT 0x0502 // Minimum version for 64 bit, Windows Server 2003

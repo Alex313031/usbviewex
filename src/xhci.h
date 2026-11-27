@@ -9,7 +9,8 @@ Abstract:
     Declarations for the newer USB hub IOCTLs (USB 3 / xHCI era), which the
     Windows headers only provide when building for a new enough Windows.
 
-    USBViewEx is built for Windows XP (_WIN32_WINNT 0x0501, see version.h), but
+    USBViewEx is built for Windows 2000/XP (_WIN32_WINNT 0x0500/0x0501, see
+    version.h), but
     still wants to ask these questions when it happens to be running on a
     system whose USB stack can answer them. <usbioctl.h> hides:
 

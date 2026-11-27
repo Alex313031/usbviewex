@@ -33,10 +33,11 @@ else
   ARCH := $(firstword $(subst -, ,$(MACHINE)))
 endif
 
-# Subsystem (and OS) version stamped into the exe: Windows XP. 64 bit Windows
-# starts at 5.02 (XP x64 / Server 2003).
+# Subsystem (and OS) version stamped into the exe: Windows 2000. Its loader
+# refuses anything stamped newer than 5.0. 64 bit Windows starts at 5.02
+# (XP x64 / Server 2003).
 ifeq ($(ARCH),x86)
-  SUBSYS_MINOR := 1
+  SUBSYS_MINOR := 0
 else
   SUBSYS_MINOR := 2
 endif

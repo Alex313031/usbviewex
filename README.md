@@ -14,7 +14,7 @@ Other people have also forked USBView, including the popular [USBTreeView](https
 
 ## What's different from upstream
 
- - Runs on Windows XP and up; upstream needs Windows 7+.
+ - Runs on Windows 2000 and up; upstream needs Windows 7+.
  - No .NET Framework dependency. That came from the XML export, which has been removed
    ("Save As (xml)" in the File menu, and the `/savexml` command line switch). Saving as text still works.
  - Window layout and icons from the 7.1 WDK version, plus a minimum window size and a few keyboard shortcuts
@@ -31,7 +31,7 @@ Those instructions are for upstream, so see the differences above.
 USBViewEx supports many build systems, including [MSVC](https://visualstudio.microsoft.com/downloads/), [GN](https://gn.googlesource.com/gn/) (via my
 [gn-legacy repo](https://github.com/Alex313031/gn-legacy#readme)), and [GNU Make](https://www.gnu.org/software/make/) (with [MinGW](https://www.mingw-w64.org/)).
 
-The MinGW builds (GNU Make and GN) are the ones meant for Windows XP, and are what the releases are built with.
+The MinGW builds (GNU Make and GN) are the ones meant for Windows 2000 and XP, and are what the releases are built with.
 The MSVC builds are mainly for development; they are not guaranteed to run on anything older than Vista.
 
 #### GNU Make (MinGW)

@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **System Details**
- - OS: [e.g. Windows XP, Vista 7, 8.1, 10]
+ - OS: [e.g. Windows 2000, XP, Vista, 7, 8.1, 10]
  - USBViewEx Version [e.g. 2.1.1]
 
 **Problem**

@@ -18,7 +18,7 @@ jobs:
     name: MinGW Build x86/x64
     # Cross-compiled on Linux with our own MinGW fork, which still targets
     # legacy Windows. The .exe files are statically linked PE binaries with
-    # the XP baseline (PE subsystem 5.1 on x86, 5.2 on x64), independent of
+    # the legacy baseline (PE subsystem 5.0 on x86, 5.2 on x64), independent of
     # the runner they were built on.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -59,8 +59,8 @@ jobs:
 
       - name: Check Binaries
         # The whole point of building with this toolchain is that the result
-        # starts on Windows XP, so fail the run if the PE header says
-        # otherwise instead of finding out on an XP machine.
+        # starts on Windows 2000/XP, so fail the run if the PE header says
+        # otherwise instead of finding out on an old machine.
         run: |
           check() {  # check <exe> <machine> <subsystem minor version>
             local headers
@@ -74,7 +74,7 @@ jobs:
             echo "$headers" | grep -Eq "MinorSubsystemVersion[[:space:]]+$3\$" \
               || { echo "::error::$1 subsystem minor version is not $3"; return 1; }
           }
-          check out/mingw/x86/Release/usbview.exe pei-i386 1
+          check out/mingw/x86/Release/usbview.exe pei-i386 0
           check out/mingw/x64/Release/usbview.exe pei-x86-64 2
 
       - name: Package .zips
