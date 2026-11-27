@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 # Least privilege: only checkout needs the token. Artifact upload uses the
-# runtime token, not GITHUB_TOKEN scopes. Widen to contents:write only if this
-# workflow later publishes releases.
+# runtime token, not GITHUB_TOKEN scopes. The publish job alone widens this to
+# contents:write, to roll the ci-build prerelease.
 permissions:
   contents: read
 
@@ -22,6 +22,10 @@ jobs:
     # the runner they were built on.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # So the publish job can name the assets without parsing src/version.h a
+    # second time.
+    outputs:
+      version: ${{ steps.package.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,6 +82,7 @@ jobs:
           check out/mingw/x64/Release/usbview.exe pei-x86-64 2
 
       - name: Package .zips
+        id: package
         # One zip per architecture, named usbviewex_<version>_<arch>.zip, each
         # holding usbview.exe, LICENSE.md and usbview.html at the top level.
         # The version comes from src/version.h so it cannot drift from the exe.
@@ -96,6 +101,7 @@ jobs:
           done
           SHA=${{ github.sha }}
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "SHA_SHORT=${SHA:0:6}" >> "$GITHUB_ENV"
 
       - name: Upload Artifacts
@@ -104,3 +110,78 @@ jobs:
           name: usbviewex_${{ env.VERSION }}_${{ env.SHA_SHORT }}
           path: usbviewex_*.zip
           if-no-files-found: error
+
+  # Roll the ci-build prerelease, so the newest successful build of main is
+  # always downloadable without digging through the Actions tab. One release
+  # and one lower-case ci-build tag, deleted and recreated each time so the tag
+  # always points at the commit its assets were built from.
+  #
+  # This workflow is workflow_dispatch only, so ci-build moves when someone
+  # asks for a build, not on every push, and can lag main. Runs from other
+  # branches still build and upload the artifact, but do not publish.
+  publish:
+    name: Publish ci-build
+    needs: build
+    if: ${{ success() && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      # For git log, which goes into the release notes.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # The artifact holds the two zips with their final names, so what gets
+      # published is byte-for-byte what the build job checked.
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: usbviewex_*
+          merge-multiple: true
+
+      - name: Check Release Files
+        env:
+          VER: ${{ needs.build.outputs.version }}
+        run: |
+          ls -la dist
+          for arch in x86 x64; do
+            if [ ! -f "dist/usbviewex_${VER}_${arch}.zip" ]; then
+              echo "::error::dist/usbviewex_${VER}_${arch}.zip is missing from the build job's artifact"
+              exit 1
+            fi
+          done
+
+      - name: Roll ci-build Prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VER: ${{ needs.build.outputs.version }}
+        run: |
+          # Header, then the full commit message.
+          {
+            echo "Automated build of USBViewEx $VER at commit ${{ github.sha }}"
+            echo
+            echo "Built with MinGW from the GNUmakefile. The 32-bit build runs on"
+            echo "Windows 2000 and up, the 64-bit build on XP x64 / Server 2003 and up."
+            echo
+            echo "| Asset | What it is |"
+            echo "|---|---|"
+            echo "| \`usbviewex_${VER}_x86.zip\` | 32-bit build |"
+            echo "| \`usbviewex_${VER}_x64.zip\` | 64-bit build |"
+            echo
+            echo "A prerelease, and rolling: this tag is deleted and recreated by"
+            echo "every successful build of main, so treat it as the current state"
+            echo "of the tree, not as a version."
+            echo
+            echo "----"
+            git log -1 --format='%B'
+          } > release-notes.md
+          # Delete the old release and its tag, then recreate at this commit so
+          # the tag always points at what the assets were built from.
+          gh release delete ci-build --cleanup-tag --yes || true
+          gh release create ci-build dist/* \
+            --target "${{ github.sha }}" \
+            --title "CI Build (latest)" \
+            --prerelease \
+            --notes-file release-notes.md
